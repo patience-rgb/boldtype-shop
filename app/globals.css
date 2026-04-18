@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-pacifico: 'Pacifico', cursive;
+  --font-space-grotesk: 'Space Grotesk', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-space-grotesk);
+  background-color: #ffffff;
+  color: #0A0A0A;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-pink text-white font-semibold px-6 py-3 rounded-full hover:bg-pink-600 transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply bg-brand-purple text-white font-semibold px-6 py-3 rounded-full hover:bg-purple-700 transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center gap-2;
+  }
+
+  .btn-outline {
+    @apply border-2 border-brand-black text-brand-black font-semibold px-6 py-3 rounded-full hover:bg-brand-black hover:text-white transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center gap-2;
+  }
+
+  .btn-yellow {
+    @apply bg-brand-yellow text-brand-black font-semibold px-6 py-3 rounded-full hover:bg-yellow-400 transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center gap-2;
+  }
+
+  .section-heading {
+    @apply font-script text-4xl md:text-5xl text-brand-black;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider;
+  }
+
+  .input {
+    @apply w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-pink transition-colors;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-gray-700 mb-1;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+::-webkit-scrollbar-thumb {
+  background: #FF3E8E;
+  border-radius: 3px;
+}
+
+/* Marquee animation */
+.marquee-track {
+  display: flex;
+  animation: marquee 25s linear infinite;
+}
