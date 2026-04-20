@@ -63,14 +63,40 @@ export function ProductForm({ initialData, mode }: Props) {
   })
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const compressImage = (file: File, maxPx = 1400, quality = 0.82): Promise<File> =>
+    new Promise((resolve, reject) => {
+      const img = new window.Image()
+      img.onload = () => {
+        let { width, height } = img
+        if (width > maxPx || height > maxPx) {
+          if (width >= height) { height = Math.round((height * maxPx) / width); width = maxPx }
+          else { width = Math.round((width * maxPx) / height); height = maxPx }
+        }
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
+        canvas.toBlob(
+          (blob) => blob
+            ? resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }))
+            : reject(new Error('Compression failed')),
+          'image/jpeg', quality
+        )
+        URL.revokeObjectURL(img.src)
+      }
+      img.onerror = reject
+      img.src = URL.createObjectURL(file)
+    })
+
   const handleImageUpload = async (files: FileList) => {
     setUploading(true)
     const uploaded: { url: string; alt: string }[] = []
 
     for (const file of Array.from(files)) {
-      const fd = new FormData()
-      fd.append('file', file)
       try {
+        const compressed = await compressImage(file)
+        const fd = new FormData()
+        fd.append('file', compressed)
         const res = await fetch('/api/upload', { method: 'POST', body: fd })
         if (!res.ok) throw new Error('Upload failed')
         const { url } = await res.json()
