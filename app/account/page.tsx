@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { formatPrice, formatDate } from '@/lib/utils'
 import { ORDER_STATUSES } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = { title: 'My Account' }
 
 export default async function AccountPage() {

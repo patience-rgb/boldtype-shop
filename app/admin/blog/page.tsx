@@ -4,6 +4,8 @@ import { Plus, Edit, Eye, EyeOff } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { DeleteBlogButton } from '@/components/admin/DeleteBlogButton'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = { title: 'Blog' }
 
 export default async function AdminBlogPage() {

@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Blog — Style, Colour & All Things Bold',
   description: 'Style tips, colour guides and brand stories from BoldType.',

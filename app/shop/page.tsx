@@ -3,6 +3,8 @@ import { ProductCard } from '@/components/ProductCard'
 import { ShopFilters } from '@/components/ShopFilters'
 import type { ProductWithRelations } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = { title: 'Shop All' }
 
 export default async function ShopPage({
