@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { Package, ShoppingCart, BookOpen, TrendingUp, Plus, ArrowRight } from 'lucide-react'
+import { Package, ShoppingCart, BookOpen, TrendingUp, Plus, ArrowRight, PenLine, Eye } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
@@ -101,16 +101,16 @@ export default async function AdminDashboard() {
       {/* Quick actions */}
       <div className="grid sm:grid-cols-3 gap-4 mt-6">
         {[
-          { href: '/admin/products/new', label: 'Add New Product', emoji: '📦', color: 'bg-brand-pink/10 hover:bg-brand-pink/20 text-brand-pink' },
-          { href: '/admin/blog/new', label: 'Write a Blog Post', emoji: '✍️', color: 'bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue' },
-          { href: '/shop', label: 'Preview Store', emoji: '👀', color: 'bg-brand-purple/10 hover:bg-brand-purple/20 text-brand-purple' },
+          { href: '/admin/products/new', label: 'Add New Product', icon: <Package size={22} />, color: 'bg-brand-pink/10 hover:bg-brand-pink/20 text-brand-pink' },
+          { href: '/admin/blog/new', label: 'Write a Blog Post', icon: <PenLine size={22} />, color: 'bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue' },
+          { href: '/shop', label: 'Preview Store', icon: <Eye size={22} />, color: 'bg-brand-purple/10 hover:bg-brand-purple/20 text-brand-purple' },
         ].map((action) => (
           <Link
             key={action.href}
             href={action.href}
             className={`${action.color} rounded-2xl p-5 flex items-center gap-3 font-semibold text-sm transition-colors`}
           >
-            <span className="text-2xl">{action.emoji}</span>
+            {action.icon}
             {action.label}
           </Link>
         ))}

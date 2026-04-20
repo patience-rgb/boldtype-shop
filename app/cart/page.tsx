@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Plus, Minus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 import { useCart } from '@/lib/store'
 import { formatPrice } from '@/lib/utils'
 
@@ -31,7 +32,7 @@ export default function CartPage() {
   return (
     <div className="pt-[104px] min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h1 className="font-script text-4xl mb-8">your cart. 🛍️</h1>
+        <h1 className="font-script text-4xl mb-8 flex items-center gap-2">your cart. <ShoppingBag size={32} /></h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Items */}
@@ -43,7 +44,7 @@ export default function CartPage() {
                     {item.image ? (
                       <Image src={item.image} alt={item.productName} fill className="object-cover" sizes="96px" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">👕</div>
+                      <div className="w-full h-full flex items-center justify-center"><TShirtIcon className="w-10 h-10 text-gray-400" /></div>
                     )}
                   </div>
                 </Link>
@@ -90,7 +91,7 @@ export default function CartPage() {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Shipping</span>
                   <span className={shipping === 0 ? 'text-green-600 font-semibold' : 'font-semibold'}>
-                    {shipping === 0 ? 'FREE 🎉' : formatPrice(shipping)}
+                    {shipping === 0 ? 'FREE' : formatPrice(shipping)}
                   </span>
                 </div>
                 {shipping > 0 && (

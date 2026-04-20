@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { formatPrice } from '@/lib/utils'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Search' }
@@ -53,7 +54,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                   {p.images[0] ? (
                     <img src={p.images[0].url} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
-                    <span className="text-4xl">👕</span>
+                    <TShirtIcon className="w-12 h-12 text-gray-400" />
                   )}
                 </div>
                 <div className="p-4">

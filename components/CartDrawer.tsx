@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { X, Plus, Minus, ShoppingBag, Trash2, ArrowRight } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 import { useCart } from '@/lib/store'
 import { formatPrice } from '@/lib/utils'
 import { useEffect } from 'react'
@@ -73,7 +74,7 @@ export function CartDrawer() {
                       {item.image ? (
                         <Image src={item.image} alt={item.productName} fill className="object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-2xl">👕</div>
+                        <div className="w-full h-full flex items-center justify-center"><TShirtIcon className="w-8 h-8 text-gray-400" /></div>
                       )}
                     </div>
                   </Link>

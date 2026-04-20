@@ -1,10 +1,12 @@
+import { Ruler } from 'lucide-react'
+
 export const metadata = { title: 'Size Guide' }
 
 export default function SizeGuidePage() {
   return (
     <div className="pt-[104px] min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 className="font-script text-5xl text-brand-pink mb-4">size guide. 📏</h1>
+        <h1 className="font-script text-5xl text-brand-pink mb-4 flex items-center gap-3">size guide. <Ruler size={40} /></h1>
         <p className="text-gray-600 mb-8">All measurements in inches. When in doubt, size up for a relaxed fit.</p>
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <table className="w-full text-sm">

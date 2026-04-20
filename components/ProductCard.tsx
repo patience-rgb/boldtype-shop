@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Heart, ShoppingBag, Tag } from 'lucide-react'
+import { Heart, ShoppingBag, Tag, Star } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 import { useWishlist, useCart } from '@/lib/store'
 import { formatPrice, getEffectivePrice, isOnSale, cn } from '@/lib/utils'
 import type { ProductWithRelations } from '@/types'
@@ -60,8 +61,8 @@ export function ProductCard({ product }: Props) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-brand-pink/10 to-brand-purple/10">
-            👕
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-pink/10 to-brand-purple/10">
+            <TShirtIcon className="w-16 h-16 text-gray-400" />
           </div>
         )}
 
@@ -73,8 +74,8 @@ export function ProductCard({ product }: Props) {
             </span>
           )}
           {product.featured && !onSale && (
-            <span className="badge bg-brand-yellow text-brand-black text-[10px]">
-              ⭐ FEATURED
+            <span className="badge bg-brand-yellow text-brand-black text-[10px] gap-1">
+              <Star size={9} /> FEATURED
             </span>
           )}
           {!inStock && (

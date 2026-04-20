@@ -38,7 +38,7 @@ function SignInForm() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <span className="font-script text-4xl text-brand-pink">boldtype.</span>
-          <h1 className="font-bold text-xl mt-3">Welcome back! 👋</h1>
+          <h1 className="font-bold text-xl mt-3">Welcome back!</h1>
           <p className="text-gray-500 text-sm mt-1">Sign in to your account</p>
         </div>
 

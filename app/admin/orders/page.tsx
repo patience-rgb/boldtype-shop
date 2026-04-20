@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { formatPrice, formatDate, ORDER_STATUSES } from '@/lib/utils'
 import { UpdateOrderStatus } from '@/components/admin/UpdateOrderStatus'
+import { Package } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,7 +29,7 @@ export default async function AdminOrdersPage() {
 
       {orders.length === 0 ? (
         <div className="bg-white rounded-2xl p-16 text-center shadow-sm">
-          <p className="text-5xl mb-4">📦</p>
+          <Package size={48} className="mx-auto mb-4 text-gray-300" />
           <h3 className="font-script text-2xl text-gray-400">no orders yet!</h3>
           <p className="text-gray-400 text-sm mt-2">Share the store link and watch the orders roll in.</p>
         </div>

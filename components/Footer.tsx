@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Instagram, Twitter, Youtube } from 'lucide-react'
+import { Instagram, Twitter, Youtube, Flame, Sparkles, Heart } from 'lucide-react'
 import { NewsletterForm } from '@/components/NewsletterForm'
 
 export function Footer() {
@@ -51,7 +51,7 @@ export function Footer() {
                 { href: '/shop/tshirts', label: 'T-Shirts' },
                 { href: '/shop/hoodies', label: 'Hoodies' },
                 { href: '/shop/sweatshirts', label: 'Sweatshirts' },
-                { href: '/shop?filter=sale', label: '🔥 Sale' },
+                { href: '/shop?filter=sale', label: <><Flame size={14} className="inline mr-1" /> Sale</> },
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
@@ -67,7 +67,7 @@ export function Footer() {
             <h4 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">Discover</h4>
             <ul className="space-y-2">
               {[
-                { href: '/color-finder', label: '✨ Find Your Colour' },
+                { href: '/color-finder', label: <><Sparkles size={14} className="inline mr-1" /> Find Your Colour</> },
                 { href: '/blog', label: 'Blog' },
                 { href: '/about', label: 'Our Story' },
                 { href: '/contact', label: 'Contact Us' },
@@ -106,7 +106,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} BoldType. All rights reserved. Made with 💗 in Canada.
+            © {new Date().getFullYear()} BoldType. All rights reserved. Made with <Heart size={12} className="inline text-brand-pink" /> in Canada.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-xs text-gray-500">Secure payments via</span>

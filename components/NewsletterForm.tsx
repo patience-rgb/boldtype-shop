@@ -9,7 +9,7 @@ export function NewsletterForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
-    toast.success("You're in! Bold inspo incoming 🎨")
+    toast.success("You're in! Bold inspo incoming")
     setEmail('')
   }
 

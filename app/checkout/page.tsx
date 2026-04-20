@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Lock, CreditCard, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Lock, CreditCard, CheckCircle2, ShoppingBag, Sparkles, Wrench } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 import { useCart } from '@/lib/store'
 import { formatPrice } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
@@ -85,7 +86,7 @@ export default function CheckoutPage() {
     return (
       <div className="pt-[104px] min-h-[60vh] flex items-center justify-center text-center">
         <div>
-          <p className="text-5xl mb-4">🛍️</p>
+          <ShoppingBag size={48} className="mx-auto mb-4 text-gray-300" />
           <h2 className="font-script text-3xl text-gray-400 mb-4">nothing to checkout!</h2>
           <Link href="/shop" className="btn-primary">Go Shopping</Link>
         </div>
@@ -98,7 +99,7 @@ export default function CheckoutPage() {
       <div className="pt-[104px] min-h-[60vh] flex items-center justify-center text-center px-4">
         <div className="animate-bounce-in">
           <CheckCircle2 size={64} className="text-green-500 mx-auto mb-4" />
-          <h2 className="font-script text-4xl mb-2">order placed! 🎉</h2>
+          <h2 className="font-script text-4xl mb-2 flex items-center justify-center gap-2">order placed! <Sparkles size={32} /></h2>
           <p className="text-gray-500 mb-2 text-sm">Thanks for shopping bold. We&apos;re on it!</p>
           <p className="text-gray-400 text-xs mb-8">You&apos;ll receive a confirmation email shortly.</p>
           <Link href="/shop" className="btn-primary">Keep Shopping</Link>
@@ -192,7 +193,7 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div className="bg-brand-yellow/20 border-2 border-brand-yellow rounded-xl p-4 mb-4 text-sm text-amber-800">
-                  <strong>🔧 Stripe integration coming soon!</strong> Enter any card details below to place a test order.
+                  <strong>Stripe integration coming soon!</strong> Enter any card details below to place a test order.
                 </div>
                 <div className="space-y-4">
                   <div>
@@ -234,7 +235,7 @@ export default function CheckoutPage() {
                       {item.image ? (
                         <Image src={item.image} alt={item.productName} fill className="object-cover" sizes="48px" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xl">👕</div>
+                        <div className="w-full h-full flex items-center justify-center"><TShirtIcon className="w-8 h-8 text-gray-400" /></div>
                       )}
                       <span className="absolute -top-1 -right-1 bg-brand-black text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                         {item.quantity}
