@@ -1,10 +1,24 @@
 import type { Metadata } from 'next'
+import { Pacifico, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CartDrawer } from '@/components/CartDrawer'
 import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
+
+const pacifico = Pacifico({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-pacifico',
+  display: 'swap',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -27,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${pacifico.variable} ${spaceGrotesk.variable}`}>
       <body>
         <Providers>
           <Navbar />
