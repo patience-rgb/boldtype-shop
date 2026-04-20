@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma'
 import { formatPrice, formatDate, ORDER_STATUSES } from '@/lib/utils'
 import { UpdateOrderStatus } from '@/components/admin/UpdateOrderStatus'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = { title: 'Orders' }
 
 export default async function AdminOrdersPage() {

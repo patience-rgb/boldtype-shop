@@ -5,6 +5,8 @@ import { Plus, Edit, Eye, EyeOff } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { DeleteProductButton } from '@/components/admin/DeleteProductButton'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = { title: 'Products' }
 
 export default async function AdminProductsPage() {

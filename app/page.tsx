@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/ProductCard'
 import type { ProductWithRelations } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 async function getFeaturedProducts(): Promise<ProductWithRelations[]> {
   return prisma.product.findMany({
     where: { published: true, featured: true },

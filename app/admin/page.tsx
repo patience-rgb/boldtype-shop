@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { Package, ShoppingCart, BookOpen, TrendingUp, Plus, ArrowRight } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = { title: 'Dashboard' }
 
 export default async function AdminDashboard() {
