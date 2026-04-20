@@ -32,7 +32,7 @@ export default async function HomePage() {
   const featuredProducts = await getFeaturedProducts()
 
   return (
-    <div className="pt-[72px]">
+    <div className="pt-[104px]">
       {/* Marquee */}
       <div className="bg-brand-purple text-white overflow-hidden py-3">
         <div className="marquee-track whitespace-nowrap text-sm font-bold tracking-widest uppercase">
@@ -122,13 +122,37 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { href: '/shop/tshirts', label: 'T-Shirts', emoji: '👕', bg: 'from-brand-pink to-pink-400', desc: 'Bold prints, louder energy' },
-            { href: '/shop/hoodies', label: 'Hoodies', emoji: '🧥', bg: 'from-brand-purple to-blue-500', desc: 'Cosy meets statement' },
-            { href: '/shop/sweatshirts', label: 'Sweatshirts', emoji: '🙌', bg: 'from-brand-yellow to-orange-400', desc: 'Relaxed but make it pop' },
+            {
+              href: '/shop/tshirts', label: 'T-Shirts', bg: 'from-brand-pink to-pink-400', desc: 'Bold prints, louder energy',
+              icon: (
+                <svg className="w-14 h-14" viewBox="0 0 56 56" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 8C19 11 16 14 10 16L4 19L10 29L16 26V48H40V26L46 29L52 19L46 16C40 14 37 11 36 8C34 12 31 15 28 15C25 15 22 12 20 8Z" />
+                </svg>
+              ),
+            },
+            {
+              href: '/shop/hoodies', label: 'Hoodies', bg: 'from-brand-purple to-blue-500', desc: 'Cosy meets statement',
+              icon: (
+                <svg className="w-14 h-14" viewBox="0 0 56 56" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 8C18 11 14 14 8 16L4 18L10 28L16 25V48H40V25L46 28L52 18L48 16C42 14 38 11 36 8C34 11 31 14 28 14C25 14 22 11 20 8Z" />
+                  <path d="M20 8C21 14 22 20 22 28H34C34 20 35 14 36 8" />
+                  <line x1="22" y1="36" x2="34" y2="36" />
+                </svg>
+              ),
+            },
+            {
+              href: '/shop/sweatshirts', label: 'Sweatshirts', bg: 'from-brand-yellow to-orange-400', desc: 'Relaxed but make it pop',
+              icon: (
+                <svg className="w-14 h-14" viewBox="0 0 56 56" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 10C19 13 16 15 10 17L4 20L10 30L16 27V48H40V27L46 30L52 20L46 17C40 15 37 13 36 10C34 13 31 16 28 16C25 16 22 13 20 10Z" />
+                  <path d="M22 10C22 13 25 16 28 16C31 16 34 13 34 10" />
+                </svg>
+              ),
+            },
           ].map((cat) => (
             <Link key={cat.href} href={cat.href} className="group relative overflow-hidden rounded-3xl">
               <div className={`bg-gradient-to-br ${cat.bg} p-8 min-h-[220px] flex flex-col justify-between transition-transform duration-300 group-hover:scale-[1.02]`}>
-                <span className="text-5xl">{cat.emoji}</span>
+                <span>{cat.icon}</span>
                 <div>
                   <h3 className="text-2xl font-bold text-white">{cat.label}</h3>
                   <p className="text-white/80 text-sm mt-1">{cat.desc}</p>
