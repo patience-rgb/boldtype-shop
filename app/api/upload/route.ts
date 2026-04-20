@@ -1,12 +1,38 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+
+function getR2Client() {
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY
+
+  if (!accountId || !accessKeyId || !secretAccessKey) return null
+
+  return new S3Client({
+    region: 'auto',
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId, secretAccessKey },
+  })
+}
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions)
   const user = session?.user as { role?: string } | undefined
   if (!session || user?.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const bucket = process.env.R2_BUCKET_NAME
+  const publicUrl = process.env.R2_PUBLIC_URL
+  const r2 = getR2Client()
+
+  if (!r2 || !bucket || !publicUrl) {
+    return NextResponse.json(
+      { error: 'Image storage not configured. Set CLOUDFLARE_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL in environment variables.' },
+      { status: 503 }
+    )
   }
 
   try {
@@ -22,61 +48,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WebP, GIF allowed.' }, { status: 400 })
     }
 
-    const maxSize = 10 * 1024 * 1024 // 10MB
-    if (file.size > maxSize) {
+    if (file.size > 10 * 1024 * 1024) {
       return NextResponse.json({ error: 'File too large. Max 10MB.' }, { status: 400 })
     }
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const base64 = buffer.toString('base64')
-    const dataUri = `data:${file.type};base64,${base64}`
 
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME
-    const apiKey = process.env.CLOUDINARY_API_KEY
-    const apiSecret = process.env.CLOUDINARY_API_SECRET
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+    const key = `products/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
-    // If Cloudinary is not configured, fall back to a placeholder response
-    // (for local dev without Cloudinary)
-    if (!cloudName || !apiKey || !apiSecret) {
-      return NextResponse.json(
-        { error: 'Image hosting not configured. Set CLOUDINARY_* environment variables.' },
-        { status: 503 }
-      )
-    }
-
-    const timestamp = Math.round(Date.now() / 1000)
-    const signaturePayload = `folder=boldtype&timestamp=${timestamp}${apiSecret}`
-
-    // Use Web Crypto API (available in Next.js edge/node runtime)
-    const encoder = new TextEncoder()
-    const data = encoder.encode(signaturePayload)
-    const hashBuffer = await crypto.subtle.digest('SHA-1', data)
-    const hashArray = Array.from(new Uint8Array(hashBuffer))
-    const signature = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-
-    const uploadForm = new FormData()
-    uploadForm.append('file', dataUri)
-    uploadForm.append('api_key', apiKey)
-    uploadForm.append('timestamp', String(timestamp))
-    uploadForm.append('signature', signature)
-    uploadForm.append('folder', 'boldtype')
-
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      { method: 'POST', body: uploadForm }
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: file.type,
+        // Makes the object publicly readable
+        ACL: 'public-read',
+      })
     )
 
-    if (!res.ok) {
-      const err = await res.text()
-      console.error('Cloudinary error:', err)
-      return NextResponse.json({ error: 'Upload to Cloudinary failed' }, { status: 500 })
-    }
-
-    const result = await res.json()
-    return NextResponse.json({ url: result.secure_url }, { status: 201 })
+    const url = `${publicUrl.replace(/\/$/, '')}/${key}`
+    return NextResponse.json({ url }, { status: 201 })
   } catch (err) {
-    console.error(err)
+    console.error('R2 upload error:', err)
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
 }
