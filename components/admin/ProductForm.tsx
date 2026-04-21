@@ -116,7 +116,7 @@ export function ProductForm({ initialData, mode }: Props) {
   }
 
   const addVariant = () => {
-    if (!newVariant.color) return toast.error('Enter a colour name')
+    if (!newVariant.color) return toast.error('Enter a color name')
     setForm((f) => ({ ...f, variants: [...f.variants, { ...newVariant }] }))
     setNewVariant({ color: '', colorHex: '#000000', size: 'M', stock: 0, sku: '' })
   }
@@ -296,14 +296,14 @@ export function ProductForm({ initialData, mode }: Props) {
                       <X size={12} />
                     </button>
                   </div>
-                  {/* Colour tag */}
+                  {/* Color tag */}
                   <div className="p-1.5 bg-white border-t border-gray-100">
                     <select
                       className="w-full text-[11px] text-gray-600 border border-gray-200 rounded-lg px-1.5 py-1 focus:outline-none focus:border-brand-pink"
                       value={img.color || ''}
                       onChange={(e) => setForm((f) => ({ ...f, images: f.images.map((im, idx) => idx === i ? { ...im, color: e.target.value || undefined } : im) }))}
                     >
-                      <option value="">All colours</option>
+                      <option value="">All colors</option>
                       {variantColors.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
@@ -312,20 +312,20 @@ export function ProductForm({ initialData, mode }: Props) {
             })}
           </div>
         )}
-        <p className="text-xs text-gray-400 mt-2">First image is the primary. Tag each image with a colour so it auto-switches when a shopper picks that variant.</p>
+        <p className="text-xs text-gray-400 mt-2">First image is the primary. Tag each image with a color so it auto-switches when a shopper picks that variant.</p>
       </div>
 
       {/* Variants */}
       <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <h2 className="font-bold text-base mb-2">Variants (Colour × Size)</h2>
-        <p className="text-xs text-gray-400 mb-5">Add each colour/size combination with individual stock levels.</p>
+        <h2 className="font-bold text-base mb-2">Variants (Color × Size)</h2>
+        <p className="text-xs text-gray-400 mb-5">Add each color/size combination with individual stock levels.</p>
 
         {/* Existing variants */}
         {form.variants.length > 0 && (
           <div className="space-y-2 mb-5">
             <div className="grid grid-cols-12 gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">
               <span className="col-span-1" />
-              <span className="col-span-3">Colour</span>
+              <span className="col-span-3">Color</span>
               <span className="col-span-2">Size</span>
               <span className="col-span-2">Stock</span>
               <span className="col-span-3">SKU</span>
@@ -374,7 +374,7 @@ export function ProductForm({ initialData, mode }: Props) {
           <p className="text-xs font-bold text-gray-500 mb-3">Add Variant</p>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             <div className="sm:col-span-2">
-              <label className="label text-xs">Colour Name</label>
+              <label className="label text-xs">Color Name</label>
               <input
                 className="input text-sm"
                 placeholder="e.g. Electric Blue"
@@ -383,7 +383,7 @@ export function ProductForm({ initialData, mode }: Props) {
               />
             </div>
             <div>
-              <label className="label text-xs">Colour Hex</label>
+              <label className="label text-xs">Color Hex</label>
               <div className="flex gap-2 items-center">
                 <input
                   type="color"

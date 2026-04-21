@@ -59,9 +59,10 @@ export async function PUT(
         featured: featured ?? false,
         published: published ?? true,
         images: {
-          create: (images || []).map((img: { url: string; alt?: string; primary?: boolean }, i: number) => ({
+          create: (images || []).map((img: { url: string; alt?: string; color?: string; primary?: boolean }, i: number) => ({
             url: img.url,
             alt: img.alt || name,
+            color: img.color || null,
             primary: i === 0,
             sortOrder: i,
           })),

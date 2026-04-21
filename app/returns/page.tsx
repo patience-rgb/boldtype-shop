@@ -21,7 +21,7 @@ export default function ReturnsPage() {
           </div>
           <div>
             <h3 className="font-bold text-lg mb-2">Exchanges</h3>
-            <p className="text-gray-600 text-sm">Want a different size or colour? We're happy to exchange. Just mention it in your return email and we'll sort it out.</p>
+            <p className="text-gray-600 text-sm">Want a different size or color? We're happy to exchange. Just mention it in your return email and we'll sort it out.</p>
           </div>
           <div className="bg-brand-pink/10 rounded-xl p-4">
             <p className="text-sm font-semibold text-brand-pink">Sale items are final sale and not eligible for return.</p>

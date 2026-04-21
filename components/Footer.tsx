@@ -10,7 +10,7 @@ export function Footer() {
         <div className="max-w-2xl mx-auto text-center">
           <h3 className="font-script text-3xl mb-2">stay in the loop.</h3>
           <p className="text-white/90 text-sm mb-5">
-            New drops, bold inspo, and colour tips — straight to your inbox. No boring stuff, promise.
+            New drops, bold inspo, and color tips — straight to your inbox. No boring stuff, promise.
           </p>
           <NewsletterForm />
         </div>
@@ -22,7 +22,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <span className="font-script text-3xl text-brand-pink">boldtype.</span>
             <p className="mt-3 text-sm text-gray-400 leading-relaxed">
-              Bold. Bright. Trend. Wear your vibe, own your colour.
+              Bold. Bright. Trend. Wear your vibe, own your color.
             </p>
             <div className="flex gap-3 mt-4">
               {[
@@ -67,7 +67,7 @@ export function Footer() {
             <h4 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">Discover</h4>
             <ul className="space-y-2">
               {[
-                { href: '/color-finder', label: <><Sparkles size={14} className="inline mr-1" /> Find Your Colour</> },
+                { href: '/color-finder', label: <><Sparkles size={14} className="inline mr-1" /> Find Your Color</> },
                 { href: '/blog', label: 'Blog' },
                 { href: '/about', label: 'Our Story' },
                 { href: '/contact', label: 'Contact Us' },

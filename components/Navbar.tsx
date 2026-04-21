@@ -17,7 +17,7 @@ const navLinks = [
   { href: '/shop/tshirts', label: 'T-Shirts', isColorFinder: false },
   { href: '/shop/hoodies', label: 'Hoodies', isColorFinder: false },
   { href: '/shop/sweatshirts', label: 'Sweatshirts', isColorFinder: false },
-  { href: '/color-finder', label: 'Find Your Colour', isColorFinder: true },
+  { href: '/color-finder', label: 'Find Your Color', isColorFinder: true },
   { href: '/blog', label: 'Blog', isColorFinder: false },
 ]
 

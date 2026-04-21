@@ -7,7 +7,7 @@ type Props = {
   bg: string
 }
 
-const DEFAULT_TEXT = 'Free shipping on orders over $75 CAD | Find your power colour →'
+const DEFAULT_TEXT = 'Free shipping on orders over $75 CAD | Find your power color →'
 
 export function AnnouncementBar({ visible, text, bg }: Props) {
   if (!visible) return null

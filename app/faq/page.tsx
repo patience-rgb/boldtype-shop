@@ -5,7 +5,7 @@ const faqs = [
   { q: 'How long does shipping take?', a: 'Canadian orders typically arrive in 3–7 business days. International orders take 7–14 business days.' },
   { q: 'What is your return policy?', a: 'We accept returns within 30 days of delivery for unworn, unwashed items with tags attached.' },
   { q: 'How do I find my size?', a: 'Check out our Size Guide for detailed measurements. We recommend sizing up for a relaxed fit.' },
-  { q: 'Are the colours true to the photos?', a: 'We do our best! Colour may vary slightly by screen. Our high-saturation palette means what you see is close to what you get.' },
+  { q: 'Are the colors true to the photos?', a: 'We do our best! Color may vary slightly by screen. Our high-saturation palette means what you see is close to what you get.' },
   { q: 'Do you restock sold-out items?', a: 'Yes! Sign up for restock alerts on the product page or follow us on Instagram for announcements.' },
 ]
 

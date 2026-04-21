@@ -27,7 +27,7 @@ export default async function EditProductPage({ params }: Props) {
     salePrice: product.salePrice?.toString() || '',
     featured: product.featured,
     published: product.published,
-    images: product.images.map((img) => ({ url: img.url, alt: img.alt || '' })),
+    images: product.images.map((img) => ({ url: img.url, alt: img.alt || '', color: img.color || undefined })),
     variants: product.variants.map((v) => ({
       color: v.color,
       colorHex: v.colorHex,
