@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Sparkles, Zap, Heart } from 'lucide-react'
+import { ArrowRight, Sparkles, Zap, Heart, Palette, Mail, FileText } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/ProductCard'
 import type { ProductWithRelations } from '@/types'
@@ -80,29 +80,53 @@ export default async function HomePage() {
             <div className="relative hidden lg:block">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4 mt-8">
-                  <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-gradient-to-br from-brand-blue to-brand-purple relative">
-                    <div className="absolute inset-0 flex items-center justify-center text-8xl">👕</div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 p-4">
-                      <p className="text-white text-sm font-bold">BT Logo Hoodie</p>
-                      <p className="text-brand-yellow text-xs">Electric Blue</p>
-                    </div>
-                  </div>
+                  {featuredProducts[0] ? (
+                    <Link href={`/shop/${featuredProducts[0].slug}`} className="block rounded-2xl overflow-hidden aspect-[3/4] relative group">
+                      {featuredProducts[0].images[0] ? (
+                        <Image src={featuredProducts[0].images[0].url} alt={featuredProducts[0].name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="280px" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-brand-blue to-brand-purple" />
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-4">
+                        <p className="text-white text-sm font-bold">{featuredProducts[0].name}</p>
+                        {featuredProducts[0].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[0].variants[0].color ?? ''}</p>}
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-gradient-to-br from-brand-blue to-brand-purple" />
+                  )}
                 </div>
                 <div className="space-y-4">
-                  <div className="rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-brand-pink to-red-400 relative">
-                    <div className="absolute inset-0 flex items-center justify-center text-7xl">🧥</div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 p-3">
-                      <p className="text-white text-xs font-bold">& Then Sweatshirt</p>
-                      <p className="text-brand-yellow text-xs">Hot Pink</p>
-                    </div>
-                  </div>
-                  <div className="rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-gray-800 to-gray-900 relative">
-                    <div className="absolute inset-0 flex items-center justify-center text-7xl">🙌</div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 p-3">
-                      <p className="text-white text-xs font-bold">Canada Hoodie</p>
-                      <p className="text-brand-yellow text-xs">Classic Black</p>
-                    </div>
-                  </div>
+                  {featuredProducts[1] ? (
+                    <Link href={`/shop/${featuredProducts[1].slug}`} className="block rounded-2xl overflow-hidden aspect-square relative group">
+                      {featuredProducts[1].images[0] ? (
+                        <Image src={featuredProducts[1].images[0].url} alt={featuredProducts[1].name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="200px" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-brand-pink to-red-400" />
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-3">
+                        <p className="text-white text-xs font-bold">{featuredProducts[1].name}</p>
+                        {featuredProducts[1].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[1].variants[0].color ?? ''}</p>}
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-brand-pink to-red-400" />
+                  )}
+                  {featuredProducts[2] ? (
+                    <Link href={`/shop/${featuredProducts[2].slug}`} className="block rounded-2xl overflow-hidden aspect-square relative group">
+                      {featuredProducts[2].images[0] ? (
+                        <Image src={featuredProducts[2].images[0].url} alt={featuredProducts[2].name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="200px" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900" />
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-3">
+                        <p className="text-white text-xs font-bold">{featuredProducts[2].name}</p>
+                        {featuredProducts[2].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[2].variants[0].color ?? ''}</p>}
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-gray-800 to-gray-900" />
+                  )}
                 </div>
               </div>
               {/* Floating badge */}
@@ -228,12 +252,12 @@ export default async function HomePage() {
       <section className="py-16 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="grid sm:grid-cols-3 gap-8 text-center">
           {[
-            { icon: '⚡', title: 'Bold by Design', desc: 'Every piece is crafted to stand out. Loud colours, bolder prints.' },
-            { icon: '🌈', title: 'Made for Every Skin Tone', desc: 'Our colour curation celebrates all complexions. Find your glow.' },
-            { icon: '💌', title: 'Ships Across Canada', desc: 'Free shipping on orders $75+. Packaged with love, obviously.' },
+            { icon: <Zap size={28} className="text-brand-yellow" />, title: 'Bold by Design', desc: 'Every piece is crafted to stand out. Loud colours, bolder prints.' },
+            { icon: <Palette size={28} className="text-brand-purple" />, title: 'Made for Every Skin Tone', desc: 'Our colour curation celebrates all complexions. Find your glow.' },
+            { icon: <Mail size={28} className="text-brand-pink" />, title: 'Ships Across Canada', desc: 'Free shipping on orders $75+. Packaged with love, obviously.' },
           ].map((item) => (
             <div key={item.title} className="p-8 rounded-3xl bg-gray-50 hover:bg-brand-pink/5 transition-colors group">
-              <div className="text-4xl mb-4">{item.icon}</div>
+              <div className="mb-4 flex justify-center">{item.icon}</div>
               <h3 className="font-bold text-lg mb-2 group-hover:text-brand-pink transition-colors">{item.title}</h3>
               <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
             </div>
@@ -256,8 +280,8 @@ export default async function HomePage() {
             { title: "Why We're Obsessed with High-Saturation Prints", tag: 'Brand Story', date: 'Feb 2025' },
           ].map((post) => (
             <Link href="/blog" key={post.title} className="group block">
-              <div className="aspect-video rounded-2xl bg-gradient-to-br from-brand-pink/20 to-brand-purple/20 border border-white/10 mb-4 flex items-center justify-center text-4xl group-hover:scale-[1.02] transition-transform">
-                📝
+              <div className="aspect-video rounded-2xl bg-gradient-to-br from-brand-pink/20 to-brand-purple/20 border border-white/10 mb-4 flex items-center justify-center group-hover:scale-[1.02] transition-transform">
+                <FileText size={40} className="text-white/40" />
               </div>
               <span className="text-brand-pink text-xs font-bold uppercase tracking-wider">{post.tag}</span>
               <h3 className="text-white font-bold text-sm mt-1 mb-2 group-hover:text-brand-pink transition-colors line-clamp-2">

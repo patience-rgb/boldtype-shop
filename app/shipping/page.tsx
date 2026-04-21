@@ -1,10 +1,12 @@
+import { Package } from 'lucide-react'
+
 export const metadata = { title: 'Shipping Info' }
 
 export default function ShippingPage() {
   return (
     <div className="pt-[104px] min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 className="font-script text-5xl text-brand-pink mb-10">shipping info. 📦</h1>
+        <h1 className="font-script text-5xl text-brand-pink mb-10 flex items-center gap-3">shipping info. <Package size={40} /></h1>
         <div className="space-y-6">
           {[
             { title: 'Canada', items: ['Free shipping on orders over $75 CAD', 'Standard: 3–7 business days — $8.99', 'Express: 1–3 business days — $18.99'] },

@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/ProductCard'
 import { ShopFilters } from '@/components/ShopFilters'
 import type { ProductWithRelations } from '@/types'
+import { Flame, Eye } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -51,9 +52,9 @@ export default async function ShopPage({
     <div className="pt-[104px] min-h-screen">
       {/* Header */}
       <div className="bg-brand-black py-12 px-4 text-center">
-        <h1 className="font-script text-5xl text-white mb-2">
+        <h1 className="font-script text-5xl text-white mb-2 flex items-center justify-center gap-2">
           {searchParams.filter === 'sale'
-            ? '🔥 on sale.'
+            ? <><Flame size={36} className="text-orange-400" /> on sale.</>
             : searchParams.q
             ? `search: "${searchParams.q}"`
             : 'shop all.'}
@@ -73,7 +74,7 @@ export default async function ShopPage({
 
         {products.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">👀</p>
+            <Eye size={48} className="mx-auto mb-4 text-gray-300" />
             <h3 className="font-script text-3xl text-gray-400 mb-2">nothing here yet!</h3>
             <p className="text-gray-400 text-sm">Try a different filter or check back soon.</p>
           </div>

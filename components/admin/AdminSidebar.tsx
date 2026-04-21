@@ -20,6 +20,7 @@ const navItems = [
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/admin/blog', label: 'Blog', icon: BookOpen },
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 
 export function AdminSidebar() {

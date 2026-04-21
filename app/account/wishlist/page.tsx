@@ -42,7 +42,7 @@ export default function WishlistPage() {
             <Heart size={56} className="text-gray-200 mx-auto mb-4" />
             <h3 className="font-script text-3xl text-gray-400 mb-2">nothing saved yet!</h3>
             <p className="text-gray-400 text-sm mb-6">
-              Hit that ❤️ on any product to save it here for later.
+              Hit the heart icon on any product to save it here for later.
             </p>
             <Link href="/shop" className="btn-primary">
               <ShoppingBag size={16} /> Browse Products

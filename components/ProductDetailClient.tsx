@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { ShoppingBag, Heart, Share2, ChevronRight, Truck, RefreshCw, Shield } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 import { useCart, useWishlist } from '@/lib/store'
 import { formatPrice, getEffectivePrice, isOnSale, cn, SIZES } from '@/lib/utils'
 import type { ProductWithRelations } from '@/types'
@@ -60,7 +61,7 @@ export function ProductDetailClient({ product }: Props) {
       image: product.images[0]?.url ?? '',
       quantity: 1,
     })
-    toast.success(`${product.name} added to cart! 🛍️`)
+    toast.success(`${product.name} added to cart!`)
     setTimeout(() => setAdding(false), 600)
   }
 
@@ -99,7 +100,7 @@ export function ProductDetailClient({ product }: Props) {
                 priority
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-8xl">👕</div>
+              <div className="w-full h-full flex items-center justify-center"><TShirtIcon className="w-20 h-20 text-gray-300" /></div>
             )}
             {onSale && (
               <div className="absolute top-4 left-4 bg-brand-pink text-white text-xs font-bold px-3 py-1.5 rounded-full">
@@ -130,7 +131,7 @@ export function ProductDetailClient({ product }: Props) {
           <div className="flex items-start justify-between gap-4">
             <h1 className="font-bold text-2xl sm:text-3xl leading-tight">{product.name}</h1>
             <button
-              onClick={() => { toggle(product.id); toast(isWishlisted ? 'Removed from wishlist' : '❤️ Saved to wishlist!') }}
+              onClick={() => { toggle(product.id); toast(isWishlisted ? 'Removed from wishlist' : 'Saved to wishlist!') }}
               className={cn(
                 'p-3 rounded-full border-2 transition-all flex-shrink-0',
                 isWishlisted ? 'bg-brand-pink text-white border-brand-pink' : 'border-gray-200 text-gray-400 hover:border-brand-pink hover:text-brand-pink'
@@ -230,7 +231,7 @@ export function ProductDetailClient({ product }: Props) {
               )}
             >
               <ShoppingBag size={20} />
-              {adding ? 'Added! 🎉' : 'Add to Cart'}
+              {adding ? 'Added!' : 'Add to Cart'}
             </button>
             {!selectedColor && (
               <p className="text-xs text-center text-gray-400">Select a colour to continue</p>

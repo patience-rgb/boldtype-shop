@@ -3,18 +3,18 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
-import { ShoppingBag, Heart, User, Menu, X, Search } from 'lucide-react'
+import { ShoppingBag, Heart, User, Menu, X, Search, Sparkles, Flame } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCart } from '@/lib/store'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { href: '/shop', label: 'Shop All' },
-  { href: '/shop/tshirts', label: 'T-Shirts' },
-  { href: '/shop/hoodies', label: 'Hoodies' },
-  { href: '/shop/sweatshirts', label: 'Sweatshirts' },
-  { href: '/color-finder', label: '✨ Find Your Colour' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/shop', label: 'Shop All', isColorFinder: false },
+  { href: '/shop/tshirts', label: 'T-Shirts', isColorFinder: false },
+  { href: '/shop/hoodies', label: 'Hoodies', isColorFinder: false },
+  { href: '/shop/sweatshirts', label: 'Sweatshirts', isColorFinder: false },
+  { href: '/color-finder', label: 'Find Your Colour', isColorFinder: true },
+  { href: '/blog', label: 'Blog', isColorFinder: false },
 ]
 
 export function Navbar() {
@@ -41,7 +41,7 @@ export function Navbar() {
     >
       {/* Announcement bar */}
       <div className="bg-brand-pink text-white text-center text-xs font-semibold py-2 px-4">
-        🔥 Free shipping on orders over $75 CAD &nbsp;|&nbsp; Find your power colour →{' '}
+        <Flame size={14} className="inline mr-1" /> Free shipping on orders over $75 CAD &nbsp;|&nbsp; Find your power colour →{' '}
         <Link href="/color-finder" className="underline hover:no-underline">
           Take the quiz
         </Link>
@@ -61,11 +61,11 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   'text-sm font-semibold hover:text-brand-pink transition-colors',
-                  link.label.includes('✨') &&
+                  link.isColorFinder &&
                     'text-brand-purple hover:text-brand-pink bg-purple-50 px-3 py-1 rounded-full'
                 )}
               >
-                {link.label}
+                {link.isColorFinder ? <><Sparkles size={14} className="inline mr-1" />{link.label}</> : link.label}
               </Link>
             </li>
           ))}
@@ -158,7 +158,7 @@ export function Navbar() {
               onClick={() => setMenuOpen(false)}
               className="block py-3 text-sm font-semibold border-b border-gray-50 hover:text-brand-pink transition-colors"
             >
-              {link.label}
+              {link.isColorFinder ? <><Sparkles size={14} className="inline mr-1" />{link.label}</> : link.label}
             </Link>
           ))}
           {session ? (

@@ -37,7 +37,7 @@ export default function SignUpPage() {
     await signIn('credentials', { email: form.email, password: form.password, redirect: false })
     router.push('/')
     router.refresh()
-    toast.success('Welcome to BoldType! 🎉')
+    toast.success('Welcome to BoldType!')
   }
 
   return (
@@ -45,7 +45,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <span className="font-script text-4xl text-brand-pink">boldtype.</span>
-          <h1 className="font-bold text-xl mt-3">Join the bold crew! 🎨</h1>
+          <h1 className="font-bold text-xl mt-3">Join the bold crew!</h1>
           <p className="text-gray-500 text-sm mt-1">Create an account to save your wishlist & track orders</p>
         </div>
 

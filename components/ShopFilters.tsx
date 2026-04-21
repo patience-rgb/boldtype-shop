@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { SlidersHorizontal, X } from 'lucide-react'
+import { SlidersHorizontal, X, Flame } from 'lucide-react'
 
 type Props = {
   categories: { value: string; label: string }[]
@@ -61,7 +61,7 @@ export function ShopFilters({ categories, activeCategory, activeSort, isSale }: 
             : 'border-gray-200 hover:border-brand-pink hover:text-brand-pink bg-white'
         )}
       >
-        🔥 Sale
+        <Flame size={14} className="inline mr-1" /> Sale
       </button>
 
       {/* Sort */}

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
+import { PenLine, FileText } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,7 +28,7 @@ export default async function BlogPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {posts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">✍️</p>
+            <PenLine size={48} className="mx-auto mb-4 text-gray-300" />
             <h3 className="font-script text-3xl text-gray-400 mb-2">posts coming soon!</h3>
             <p className="text-gray-400 text-sm">We&apos;re writing something bold for you. Stay tuned!</p>
           </div>
@@ -45,7 +46,7 @@ export default async function BlogPage() {
                       sizes="(max-width: 640px) 100vw, 33vw"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-5xl">📝</div>
+                    <div className="w-full h-full flex items-center justify-center"><FileText size={48} className="text-gray-300" /></div>
                   )}
                 </div>
                 <div className="p-5">

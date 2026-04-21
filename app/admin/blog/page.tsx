@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { Plus, Edit, Eye, EyeOff } from 'lucide-react'
+import { Plus, Edit, Eye, EyeOff, PenLine } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { DeleteBlogButton } from '@/components/admin/DeleteBlogButton'
 
@@ -25,7 +25,7 @@ export default async function AdminBlogPage() {
 
       {posts.length === 0 ? (
         <div className="bg-white rounded-2xl p-16 text-center shadow-sm">
-          <p className="text-5xl mb-4">✍️</p>
+          <PenLine size={48} className="mx-auto mb-4 text-gray-300" />
           <h3 className="font-script text-2xl text-gray-400 mb-2">nothing written yet!</h3>
           <Link href="/admin/blog/new" className="btn-primary">
             <Plus size={16} /> Write First Post

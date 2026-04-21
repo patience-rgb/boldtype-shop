@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Plus, Edit, Eye, EyeOff } from 'lucide-react'
+import { Plus, Edit, Eye, EyeOff, Package } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 import { formatPrice } from '@/lib/utils'
 import { DeleteProductButton } from '@/components/admin/DeleteProductButton'
 
@@ -35,7 +36,7 @@ export default async function AdminProductsPage() {
 
       {products.length === 0 ? (
         <div className="bg-white rounded-2xl p-16 text-center shadow-sm">
-          <p className="text-5xl mb-4">📦</p>
+          <Package size={48} className="mx-auto mb-4 text-gray-300" />
           <h3 className="font-script text-2xl text-gray-400 mb-2">no products yet!</h3>
           <p className="text-gray-400 text-sm mb-6">Add your first bold product to get started.</p>
           <Link href="/admin/products/new" className="btn-primary">
@@ -65,7 +66,7 @@ export default async function AdminProductsPage() {
                           {product.images[0] ? (
                             <Image src={product.images[0].url} alt={product.name} fill className="object-cover" sizes="48px" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-xl">👕</div>
+                            <div className="w-full h-full flex items-center justify-center"><TShirtIcon className="w-8 h-8 text-gray-400" /></div>
                           )}
                         </div>
                         <div>

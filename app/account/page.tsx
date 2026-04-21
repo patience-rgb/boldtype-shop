@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { formatPrice, formatDate } from '@/lib/utils'
 import { ORDER_STATUSES } from '@/lib/utils'
+import { Heart, Package } from 'lucide-react'
+import { TShirtIcon } from '@/components/icons/ClothingIcons'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,11 +36,11 @@ export default async function AccountPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-script text-4xl">hey, {session.user?.name?.split(' ')[0] || 'you'}. 👋</h1>
+            <h1 className="font-script text-4xl">hey, {session.user?.name?.split(' ')[0] || 'you'}.</h1>
             <p className="text-gray-500 text-sm mt-1">{session.user?.email}</p>
           </div>
-          <Link href="/account/wishlist" className="btn-outline text-sm py-2 px-5">
-            ❤️ Wishlist
+          <Link href="/account/wishlist" className="btn-outline text-sm py-2 px-5 flex items-center gap-1.5">
+            <Heart size={14} /> Wishlist
           </Link>
         </div>
 
@@ -46,7 +48,7 @@ export default async function AccountPage() {
 
         {orders.length === 0 ? (
           <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-            <p className="text-4xl mb-4">📦</p>
+            <Package size={48} className="mx-auto mb-4 text-gray-300" />
             <h3 className="font-script text-2xl text-gray-400 mb-2">no orders yet!</h3>
             <p className="text-gray-400 text-sm mb-6">Time to fix that. Go grab something bold!</p>
             <Link href="/shop" className="btn-primary">Shop Now</Link>
@@ -76,7 +78,7 @@ export default async function AccountPage() {
                           {item.product.images[0] ? (
                             <img src={item.product.images[0].url} alt="" className="w-full h-full object-cover" />
                           ) : (
-                            <span className="text-2xl">👕</span>
+                            <TShirtIcon className="w-8 h-8 text-gray-400" />
                           )}
                         </div>
                         <p className="text-[10px] text-gray-500 mt-1">{item.color}/{item.size}</p>

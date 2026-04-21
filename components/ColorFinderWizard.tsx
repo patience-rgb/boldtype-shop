@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, RotateCcw, ShoppingBag, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, RotateCcw, ShoppingBag, CheckCircle2, Sparkles, Snowflake, Flame } from 'lucide-react'
 import { COLOR_RECOMMENDATIONS, cn } from '@/lib/utils'
 
 type Vibe = 'WARM' | 'COOL' | 'NEUTRAL' | null
@@ -10,7 +11,7 @@ type Vibe = 'WARM' | 'COOL' | 'NEUTRAL' | null
 const steps = [
   {
     id: 1,
-    title: 'The Jewelry Check 💍',
+    title: 'The Jewelry Check',
     subtitle: 'Use natural daylight for best results',
     question: 'Which metal makes your skin look its clearest and gives a healthy glow?',
     options: [
@@ -18,25 +19,25 @@ const steps = [
         label: 'Silver, Platinum, or White Gold',
         desc: 'These cool-toned metals seem to make my skin light up',
         vibe: 'COOL' as Vibe,
-        emoji: '🥈',
+        emoji: <div className="w-8 h-8 rounded-full bg-gray-300 ring-2 ring-gray-400 flex-shrink-0" /> as React.ReactNode,
       },
       {
         label: 'Yellow Gold, Rose Gold, or Brass',
         desc: 'Warm metals just… work on me. I look more alive!',
         vibe: 'WARM' as Vibe,
-        emoji: '🥇',
+        emoji: <div className="w-8 h-8 rounded-full bg-yellow-400 ring-2 ring-yellow-500 flex-shrink-0" /> as React.ReactNode,
       },
       {
         label: 'Both look equally great on me',
         desc: "I genuinely can't decide — both look fab",
         vibe: 'NEUTRAL' as Vibe,
-        emoji: '✨',
+        emoji: <Sparkles size={24} className="text-brand-purple" /> as React.ReactNode,
       },
     ],
   },
   {
     id: 2,
-    title: 'The Contrast Check 🎨',
+    title: 'The Contrast Check',
     subtitle: 'Best for deeper skin tones — skip if unsure!',
     question: 'Apply a cool-pink blush on one side of your face and a warm-orange blush on the other. Which one clashes (stands out awkwardly first)?',
     options: [
@@ -44,19 +45,19 @@ const steps = [
         label: 'The warm-orange clashes',
         desc: 'The orange tones look out of place — my skin rejects warm',
         vibe: 'COOL' as Vibe,
-        emoji: '❄️',
+        emoji: <Snowflake size={24} className="text-blue-400" /> as React.ReactNode,
       },
       {
         label: 'The cool-pink / blue clashes',
         desc: 'Pink or blue-toned anything looks weird — my skin rejects cool',
         vibe: 'WARM' as Vibe,
-        emoji: '🔥',
+        emoji: <Flame size={24} className="text-orange-500" /> as React.ReactNode,
       },
       {
         label: "Skip this — I'm not sure",
         desc: "I'll go with my jewelry check result",
         vibe: null,
-        emoji: '➡️',
+        emoji: <ArrowRight size={24} className="text-gray-400" /> as React.ReactNode,
       },
     ],
   },
@@ -123,7 +124,7 @@ export function ColorFinderWizard() {
             <CheckCircle2 size={16} /> Your Vibe is Identified!
           </div>
           <h2 className="font-script text-5xl mb-3">
-            {rec.emoji} your vibe is{' '}
+            your vibe is{' '}
             <span
               className={cn(
                 result === 'WARM' && 'text-amber-500',
@@ -141,7 +142,7 @@ export function ColorFinderWizard() {
         {/* Colour cards */}
         <div className="space-y-4 mb-10">
           <h3 className="font-bold text-lg">
-            Your Bold & Bright Power Palette 🎨
+            Your Bold & Bright Power Palette
           </h3>
           {rec.colors.map((color, i) => (
             <div
@@ -250,7 +251,7 @@ export function ColorFinderWizard() {
               )}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{option.emoji}</span>
+                {option.emoji}
                 <div>
                   <p className="font-bold text-sm group-hover:text-brand-pink transition-colors">
                     {option.label}

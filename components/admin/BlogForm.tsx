@@ -2,9 +2,34 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Upload, X } from 'lucide-react'
+import { Upload, X, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+
+function compressImage(file: File, maxPx = 1400, quality = 0.82): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxPx || height > maxPx) {
+        if (width >= height) { height = Math.round((height * maxPx) / width); width = maxPx }
+        else { width = Math.round((width * maxPx) / height); height = maxPx }
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width; canvas.height = height
+      canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
+      canvas.toBlob(
+        (blob) => blob
+          ? resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }))
+          : reject(new Error('Compression failed')),
+        'image/jpeg', quality
+      )
+      URL.revokeObjectURL(img.src)
+    }
+    img.onerror = reject
+    img.src = URL.createObjectURL(file)
+  })
+}
 
 type BlogFormData = {
   title: string
@@ -38,9 +63,10 @@ export function BlogForm({ initialData, mode }: Props) {
 
   const handleCoverUpload = async (file: File) => {
     setUploading(true)
-    const fd = new FormData()
-    fd.append('file', file)
     try {
+      const compressed = await compressImage(file)
+      const fd = new FormData()
+      fd.append('file', compressed)
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
       const { url } = await res.json()
       setForm((f) => ({ ...f, coverImage: url }))
@@ -99,16 +125,31 @@ export function BlogForm({ initialData, mode }: Props) {
       {/* Cover image */}
       <div className="bg-white rounded-2xl p-6 shadow-sm">
         <h2 className="font-bold text-base mb-4">Cover Image</h2>
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { handleCoverUpload(e.target.files[0]); e.target.value = '' } }} />
         {form.coverImage ? (
           <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden group">
             <Image src={form.coverImage} alt="Cover" fill className="object-cover" sizes="400px" />
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, coverImage: '' })}
-              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <X size={14} />
-            </button>
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="bg-white text-brand-black font-semibold text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 hover:bg-brand-yellow transition-colors"
+              >
+                <RefreshCw size={12} /> Change
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, coverImage: '' })}
+                className="bg-red-500 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 hover:bg-red-600 transition-colors"
+              >
+                <X size={12} /> Remove
+              </button>
+            </div>
+            {uploading && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                <p className="text-white text-sm font-semibold">Uploading...</p>
+              </div>
+            )}
           </div>
         ) : (
           <div
@@ -117,7 +158,6 @@ export function BlogForm({ initialData, mode }: Props) {
           >
             <Upload size={28} className="mx-auto text-gray-300 mb-2" />
             <p className="text-sm text-gray-400">{uploading ? 'Uploading...' : 'Click to upload cover image'}</p>
-            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleCoverUpload(e.target.files[0])} />
           </div>
         )}
       </div>
