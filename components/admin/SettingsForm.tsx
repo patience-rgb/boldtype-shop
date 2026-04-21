@@ -13,7 +13,14 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronUp,
+  ImageIcon,
+  Layout,
+  Megaphone,
+  Upload,
+  X,
 } from 'lucide-react'
+import Image from 'next/image'
+import { useRef } from 'react'
 
 type Props = {
   initialSettings: Record<string, string>
@@ -112,10 +119,78 @@ export function SettingsForm({ initialSettings }: Props) {
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(initialSettings.free_shipping_threshold || '75')
   const [defaultShippingRate, setDefaultShippingRate] = useState(initialSettings.default_shipping_rate || '9.99')
 
+  // Branding
+  const [logoUrl, setLogoUrl] = useState(initialSettings.logo_url || '')
+  const [faviconUrl, setFaviconUrl] = useState(initialSettings.favicon_url || '')
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [uploadingFavicon, setUploadingFavicon] = useState(false)
+  const [savingBranding, setSavingBranding] = useState(false)
+  const logoRef = useRef<HTMLInputElement>(null)
+  const faviconRef = useRef<HTMLInputElement>(null)
+
+  // Announcement bar
+  const [annVisible, setAnnVisible] = useState(initialSettings.announcement_visible !== 'false')
+  const [annText, setAnnText] = useState(initialSettings.announcement_text || '')
+  const [annBg, setAnnBg] = useState(initialSettings.announcement_bg || '#FF3E8E')
+  const [savingAnn, setSavingAnn] = useState(false)
+
+  // Hero content
+  const [heroH1, setHeroH1] = useState(initialSettings.hero_heading_1 || '')
+  const [heroH2, setHeroH2] = useState(initialSettings.hero_heading_2 || '')
+  const [heroH3, setHeroH3] = useState(initialSettings.hero_heading_3 || '')
+  const [heroSubtitle, setHeroSubtitle] = useState(initialSettings.hero_subtitle || '')
+  const [heroBadge, setHeroBadge] = useState(initialSettings.hero_badge || '')
+  const [heroBg, setHeroBg] = useState(initialSettings.hero_bg_color || '#0A0A0A')
+  const [savingHero, setSavingHero] = useState(false)
+
   const [savingStripe, setSavingStripe] = useState(false)
   const [savingShipping, setSavingShipping] = useState(false)
   const [showStripeSetup, setShowStripeSetup] = useState(false)
   const [showShippingSetup, setShowShippingSetup] = useState(false)
+
+  const uploadAsset = async (file: File, onUrl: (url: string) => void, setUploading: (v: boolean) => void) => {
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      if (!res.ok) throw new Error()
+      const { url } = await res.json()
+      onUrl(url)
+      toast.success('Uploaded!')
+    } catch {
+      toast.error('Upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const saveBranding = async () => {
+    setSavingBranding(true)
+    try {
+      const res = await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ logo_url: logoUrl, favicon_url: faviconUrl }) })
+      if (!res.ok) throw new Error()
+      toast.success('Branding saved!')
+    } catch { toast.error('Failed to save') } finally { setSavingBranding(false) }
+  }
+
+  const saveAnnouncement = async () => {
+    setSavingAnn(true)
+    try {
+      const res = await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ announcement_visible: String(annVisible), announcement_text: annText, announcement_bg: annBg }) })
+      if (!res.ok) throw new Error()
+      toast.success('Announcement saved!')
+    } catch { toast.error('Failed to save') } finally { setSavingAnn(false) }
+  }
+
+  const saveHero = async () => {
+    setSavingHero(true)
+    try {
+      const res = await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hero_heading_1: heroH1, hero_heading_2: heroH2, hero_heading_3: heroH3, hero_subtitle: heroSubtitle, hero_badge: heroBadge, hero_bg_color: heroBg }) })
+      if (!res.ok) throw new Error()
+      toast.success('Hero content saved!')
+    } catch { toast.error('Failed to save') } finally { setSavingHero(false) }
+  }
 
   const stripeIsConfigured = stripeMode === 'live'
     ? !!(initialSettings.stripe_publishable_key_live && initialSettings.stripe_secret_key_live)
@@ -177,8 +252,166 @@ export function SettingsForm({ initialSettings }: Props) {
     <div className="max-w-3xl space-y-6">
       <div className="mb-8">
         <h1 className="font-script text-4xl">settings.</h1>
-        <p className="text-gray-500 text-sm mt-1">Configure payment and shipping integrations</p>
+        <p className="text-gray-500 text-sm mt-1">Manage branding, content, payment and shipping</p>
       </div>
+
+      {/* Branding */}
+      <section className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="bg-brand-pink/10 text-brand-pink rounded-xl p-2.5"><ImageIcon size={20} /></div>
+            <div>
+              <h2 className="font-bold text-base">Site Branding</h2>
+              <p className="text-xs text-gray-400">Logo and favicon shown across the site</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-6 space-y-5">
+          {/* Logo */}
+          <div>
+            <label className="label">Logo</label>
+            <p className="text-xs text-gray-400 mb-3">Upload a PNG/SVG. If empty, the text "boldtype." is used.</p>
+            <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadAsset(e.target.files[0], setLogoUrl, setUploadingLogo)} />
+            {logoUrl ? (
+              <div className="flex items-center gap-3">
+                <div className="relative h-12 w-40 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                  <Image src={logoUrl} alt="Logo" fill className="object-contain p-1" sizes="160px" />
+                </div>
+                <button type="button" onClick={() => setLogoUrl('')} className="text-gray-400 hover:text-red-500 transition-colors"><X size={16} /></button>
+                <button type="button" onClick={() => logoRef.current?.click()} className="text-xs text-brand-purple font-semibold hover:underline">Change</button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => logoRef.current?.click()} className="flex items-center gap-2 border-2 border-dashed border-gray-200 rounded-xl px-5 py-3 text-sm text-gray-400 hover:border-brand-pink transition-colors">
+                <Upload size={16} /> {uploadingLogo ? 'Uploading...' : 'Upload logo image'}
+              </button>
+            )}
+          </div>
+
+          {/* Favicon */}
+          <div>
+            <label className="label">Favicon</label>
+            <p className="text-xs text-gray-400 mb-3">Square image (32×32 or 64×64 recommended). Shown in browser tabs.</p>
+            <input ref={faviconRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadAsset(e.target.files[0], setFaviconUrl, setUploadingFavicon)} />
+            {faviconUrl ? (
+              <div className="flex items-center gap-3">
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                  <Image src={faviconUrl} alt="Favicon" fill className="object-contain p-1" sizes="48px" />
+                </div>
+                <button type="button" onClick={() => setFaviconUrl('')} className="text-gray-400 hover:text-red-500 transition-colors"><X size={16} /></button>
+                <button type="button" onClick={() => faviconRef.current?.click()} className="text-xs text-brand-purple font-semibold hover:underline">Change</button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => faviconRef.current?.click()} className="flex items-center gap-2 border-2 border-dashed border-gray-200 rounded-xl px-5 py-3 text-sm text-gray-400 hover:border-brand-pink transition-colors">
+                <Upload size={16} /> {uploadingFavicon ? 'Uploading...' : 'Upload favicon image'}
+              </button>
+            )}
+          </div>
+
+          <button type="button" onClick={saveBranding} disabled={savingBranding} className="btn-primary text-sm py-2.5 px-6 disabled:opacity-50">
+            <Save size={15} /> {savingBranding ? 'Saving...' : 'Save Branding'}
+          </button>
+        </div>
+      </section>
+
+      {/* Announcement Bar */}
+      <section className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="bg-brand-yellow/20 text-yellow-600 rounded-xl p-2.5"><Megaphone size={20} /></div>
+            <div>
+              <h2 className="font-bold text-base">Announcement Bar</h2>
+              <p className="text-xs text-gray-400">The pink ribbon at the top of every page</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5 accent-brand-pink" checked={annVisible} onChange={(e) => setAnnVisible(e.target.checked)} />
+            <div>
+              <p className="font-semibold text-sm">Show announcement bar</p>
+              <p className="text-xs text-gray-400">Uncheck to hide it sitewide</p>
+            </div>
+          </label>
+
+          <div className={annVisible ? '' : 'opacity-40 pointer-events-none'}>
+            <label className="label">Message Text</label>
+            <input className="input" value={annText} onChange={(e) => setAnnText(e.target.value)} placeholder="Free shipping on orders over $75 CAD | Find your power colour →" />
+            <p className="text-xs text-gray-400 mt-1">Use → at the end to auto-link to the colour quiz</p>
+          </div>
+
+          <div className={annVisible ? '' : 'opacity-40 pointer-events-none'}>
+            <label className="label">Background Colour</label>
+            <div className="flex items-center gap-3">
+              <input type="color" className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-1" value={annBg} onChange={(e) => setAnnBg(e.target.value)} />
+              <input className="input flex-1" value={annBg} onChange={(e) => setAnnBg(e.target.value)} placeholder="#FF3E8E" />
+            </div>
+          </div>
+
+          {/* Live preview */}
+          {annVisible && (
+            <div className="rounded-xl overflow-hidden">
+              <div className="text-white text-center text-xs font-semibold py-2 px-4" style={{ backgroundColor: annBg || '#FF3E8E' }}>
+                {annText || 'Free shipping on orders over $75 CAD | Find your power colour →'} <span className="underline">Take the quiz</span>
+              </div>
+            </div>
+          )}
+
+          <button type="button" onClick={saveAnnouncement} disabled={savingAnn} className="btn-primary text-sm py-2.5 px-6 disabled:opacity-50">
+            <Save size={15} /> {savingAnn ? 'Saving...' : 'Save Announcement'}
+          </button>
+        </div>
+      </section>
+
+      {/* Hero Content */}
+      <section className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="bg-brand-purple/10 text-brand-purple rounded-xl p-2.5"><Layout size={20} /></div>
+            <div>
+              <h2 className="font-bold text-base">Hero Section</h2>
+              <p className="text-xs text-gray-400">Homepage hero heading and background. Product cards auto-update from featured products.</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <div>
+              <label className="label">Heading Line 1</label>
+              <input className="input" value={heroH1} onChange={(e) => setHeroH1(e.target.value)} placeholder="wear your" />
+            </div>
+            <div>
+              <label className="label">Heading Line 2 (pink)</label>
+              <input className="input" value={heroH2} onChange={(e) => setHeroH2(e.target.value)} placeholder="boldest" />
+            </div>
+            <div>
+              <label className="label">Heading Line 3 (yellow)</label>
+              <input className="input" value={heroH3} onChange={(e) => setHeroH3(e.target.value)} placeholder="colours." />
+            </div>
+          </div>
+          <div>
+            <label className="label">Subtitle</label>
+            <textarea className="input resize-none h-16" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} placeholder="High-saturation hoodies, tees & sweatshirts..." />
+          </div>
+          <div>
+            <label className="label">Badge Text</label>
+            <input className="input" value={heroBadge} onChange={(e) => setHeroBadge(e.target.value)} placeholder="New Collection is Here" />
+          </div>
+          <div>
+            <label className="label">Background Colour</label>
+            <div className="flex items-center gap-3">
+              <input type="color" className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-1" value={heroBg} onChange={(e) => setHeroBg(e.target.value)} />
+              <input className="input flex-1" value={heroBg} onChange={(e) => setHeroBg(e.target.value)} placeholder="#0A0A0A" />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">Dark colours work best — text is always white</p>
+          </div>
+          <p className="text-xs text-gray-400 bg-gray-50 rounded-xl p-3">
+            <strong>Product cards:</strong> The 3 product cards in the hero automatically show your top featured products. Mark products as "featured" in the product editor to control which ones appear.
+          </p>
+          <button type="button" onClick={saveHero} disabled={savingHero} className="btn-primary text-sm py-2.5 px-6 disabled:opacity-50">
+            <Save size={15} /> {savingHero ? 'Saving...' : 'Save Hero Content'}
+          </button>
+        </div>
+      </section>
 
       {/* Stripe */}
       <section className="bg-white rounded-2xl shadow-sm overflow-hidden">

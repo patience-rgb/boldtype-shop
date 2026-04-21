@@ -3,10 +3,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
-import { ShoppingBag, Heart, User, Menu, X, Search, Sparkles, Flame } from 'lucide-react'
+import { ShoppingBag, Heart, User, Menu, X, Search, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCart } from '@/lib/store'
 import { cn } from '@/lib/utils'
+
+type Props = {
+  logoUrl?: string
+}
 
 const navLinks = [
   { href: '/shop', label: 'Shop All', isColorFinder: false },
@@ -17,7 +21,7 @@ const navLinks = [
   { href: '/blog', label: 'Blog', isColorFinder: false },
 ]
 
-export function Navbar() {
+export function Navbar({ logoUrl }: Props) {
   const { data: session } = useSession()
   const { count, openCart } = useCart()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -35,22 +39,18 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        'fixed top-9 left-0 right-0 z-40 transition-all duration-300',
         scrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'
       )}
     >
-      {/* Announcement bar */}
-      <div className="bg-brand-pink text-white text-center text-xs font-semibold py-2 px-4">
-        <Flame size={14} className="inline mr-1" /> Free shipping on orders over $75 CAD &nbsp;|&nbsp; Find your power colour →{' '}
-        <Link href="/color-finder" className="underline hover:no-underline">
-          Take the quiz
-        </Link>
-      </div>
-
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <span className="font-script text-3xl text-brand-pink leading-none">boldtype.</span>
+          {logoUrl ? (
+            <Image src={logoUrl} alt="BoldType Logo" height={40} width={140} className="h-10 w-auto object-contain" />
+          ) : (
+            <span className="font-script text-3xl text-brand-pink leading-none">boldtype.</span>
+          )}
         </Link>
 
         {/* Desktop nav */}
@@ -73,19 +73,10 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/search"
-            className="p-2 hover:text-brand-pink transition-colors hidden sm:flex"
-            aria-label="Search"
-          >
+          <Link href="/search" className="p-2 hover:text-brand-pink transition-colors hidden sm:flex" aria-label="Search">
             <Search size={20} />
           </Link>
-
-          <Link
-            href="/account/wishlist"
-            className="p-2 hover:text-brand-pink transition-colors hidden sm:flex"
-            aria-label="Wishlist"
-          >
+          <Link href="/account/wishlist" className="p-2 hover:text-brand-pink transition-colors hidden sm:flex" aria-label="Wishlist">
             <Heart size={20} />
           </Link>
 
@@ -99,21 +90,12 @@ export function Navbar() {
                   <p className="text-xs text-gray-500">Signed in as</p>
                   <p className="text-sm font-semibold truncate">{session.user?.name || session.user?.email}</p>
                 </div>
-                <Link href="/account" className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-pink">
-                  My Orders
-                </Link>
-                <Link href="/account/wishlist" className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-pink">
-                  Wishlist
-                </Link>
+                <Link href="/account" className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-pink">My Orders</Link>
+                <Link href="/account/wishlist" className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-pink">Wishlist</Link>
                 {user?.role === 'ADMIN' && (
-                  <Link href="/admin" className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-purple font-semibold">
-                    Admin Panel
-                  </Link>
+                  <Link href="/admin" className="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-brand-purple font-semibold">Admin Panel</Link>
                 )}
-                <button
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-red-500"
-                >
+                <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-red-500">
                   Sign Out
                 </button>
               </div>
@@ -124,11 +106,7 @@ export function Navbar() {
             </Link>
           )}
 
-          <button
-            onClick={openCart}
-            className="relative p-2 hover:text-brand-pink transition-colors"
-            aria-label="Cart"
-          >
+          <button onClick={openCart} className="relative p-2 hover:text-brand-pink transition-colors" aria-label="Cart">
             <ShoppingBag size={20} />
             {count > 0 && (
               <span className="absolute -top-0.5 -right-0.5 bg-brand-pink text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce-in">
@@ -137,7 +115,6 @@ export function Navbar() {
             )}
           </button>
 
-          {/* Mobile menu toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="lg:hidden p-2 hover:text-brand-pink transition-colors ml-1"
@@ -163,17 +140,11 @@ export function Navbar() {
           ))}
           {session ? (
             <>
-              <Link href="/account" onClick={() => setMenuOpen(false)} className="block py-3 text-sm font-semibold border-b border-gray-50 hover:text-brand-pink">
-                My Account
-              </Link>
+              <Link href="/account" onClick={() => setMenuOpen(false)} className="block py-3 text-sm font-semibold border-b border-gray-50 hover:text-brand-pink">My Account</Link>
               {user?.role === 'ADMIN' && (
-                <Link href="/admin" onClick={() => setMenuOpen(false)} className="block py-3 text-sm font-semibold text-brand-purple border-b border-gray-50">
-                  Admin Panel
-                </Link>
+                <Link href="/admin" onClick={() => setMenuOpen(false)} className="block py-3 text-sm font-semibold text-brand-purple border-b border-gray-50">Admin Panel</Link>
               )}
-              <button onClick={() => signOut({ callbackUrl: '/' })} className="block py-3 text-sm font-semibold text-red-500">
-                Sign Out
-              </button>
+              <button onClick={() => signOut({ callbackUrl: '/' })} className="block py-3 text-sm font-semibold text-red-500">Sign Out</button>
             </>
           ) : (
             <Link href="/auth/signin" onClick={() => setMenuOpen(false)} className="block py-3 text-sm font-semibold border-b border-gray-50 hover:text-brand-pink">

@@ -24,7 +24,7 @@ type ProductFormData = {
   salePrice: string
   featured: boolean
   published: boolean
-  images: { url: string; alt: string }[]
+  images: { url: string; alt: string; color?: string }[]
   variants: Variant[]
 }
 
@@ -276,27 +276,43 @@ export function ProductForm({ initialData, mode }: Props) {
           <div className="mt-3 text-sm text-brand-pink font-semibold text-center">Uploading...</div>
         )}
         {form.images.length > 0 && (
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-4">
-            {form.images.map((img, i) => (
-              <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100">
-                <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="120px" />
-                {i === 0 && (
-                  <div className="absolute top-1 left-1 bg-brand-pink text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                    PRIMARY
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+            {form.images.map((img, i) => {
+              const variantColors = Array.from(new Set(form.variants.map((v) => v.color).filter(Boolean)))
+              return (
+                <div key={i} className="relative group rounded-xl overflow-hidden bg-gray-100">
+                  <div className="aspect-square relative">
+                    <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="160px" />
+                    {i === 0 && (
+                      <div className="absolute top-1 left-1 bg-brand-pink text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                        PRIMARY
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={12} />
+                    </button>
                   </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => removeImage(i)}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X size={12} />
-                </button>
-              </div>
-            ))}
+                  {/* Colour tag */}
+                  <div className="p-1.5 bg-white border-t border-gray-100">
+                    <select
+                      className="w-full text-[11px] text-gray-600 border border-gray-200 rounded-lg px-1.5 py-1 focus:outline-none focus:border-brand-pink"
+                      value={img.color || ''}
+                      onChange={(e) => setForm((f) => ({ ...f, images: f.images.map((im, idx) => idx === i ? { ...im, color: e.target.value || undefined } : im) }))}
+                    >
+                      <option value="">All colours</option>
+                      {variantColors.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
-        <p className="text-xs text-gray-400 mt-2">First image is used as the primary/cover image.</p>
+        <p className="text-xs text-gray-400 mt-2">First image is the primary. Tag each image with a colour so it auto-switches when a shopper picks that variant.</p>
       </div>
 
       {/* Variants */}

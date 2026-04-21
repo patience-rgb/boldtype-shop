@@ -18,6 +18,14 @@ export function ProductDetailClient({ product }: Props) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
 
+  // When a colour is picked, jump to the first image tagged for that colour (if any)
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color)
+    setSelectedSize(null)
+    const idx = product.images.findIndex((img) => img.color === color)
+    if (idx !== -1) setSelectedImage(idx)
+  }
+
   const { addItem } = useCart()
   const { toggle, has } = useWishlist()
   const isWishlisted = has(product.id)
@@ -167,7 +175,7 @@ export function ProductDetailClient({ product }: Props) {
                 <button
                   key={color}
                   title={color}
-                  onClick={() => { setSelectedColor(color); setSelectedSize(null) }}
+                  onClick={() => handleColorSelect(color)}
                   className={cn(
                     'w-9 h-9 rounded-full border-4 transition-all hover:scale-110',
                     selectedColor === color ? 'border-brand-pink scale-110' : 'border-transparent'
