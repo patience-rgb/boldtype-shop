@@ -19,6 +19,7 @@ export type ProductImage = {
   id: string
   url: string
   alt?: string | null
+  color?: string | null
   primary: boolean
   sortOrder: number
   productId: string

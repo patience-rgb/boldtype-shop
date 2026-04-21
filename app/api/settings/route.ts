@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 const ALLOWED_KEYS = [
+  // Stripe
   'stripe_mode',
   'stripe_publishable_key_live',
   'stripe_secret_key_live',
@@ -11,11 +12,26 @@ const ALLOWED_KEYS = [
   'stripe_publishable_key_test',
   'stripe_secret_key_test',
   'stripe_webhook_secret_test',
+  // Shipping
   'shipping_provider',
   'shipengine_api_key',
   'easyship_api_key',
   'free_shipping_threshold',
   'default_shipping_rate',
+  // Branding
+  'logo_url',
+  'favicon_url',
+  // Announcement bar
+  'announcement_visible',
+  'announcement_text',
+  'announcement_bg',
+  // Hero content
+  'hero_heading_1',
+  'hero_heading_2',
+  'hero_heading_3',
+  'hero_subtitle',
+  'hero_badge',
+  'hero_bg_color',
 ]
 
 async function requireAdmin() {

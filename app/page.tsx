@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Sparkles, Zap, Heart, Palette, Mail, FileText } from 'lucide-react'
+import { ArrowRight, Sparkles, Zap, Palette, Mail } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/ProductCard'
-import type { ProductWithRelations } from '@/types'
+import type { ProductWithRelations, BlogPostType } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +19,27 @@ async function getFeaturedProducts(): Promise<ProductWithRelations[]> {
   })
 }
 
+async function getRecentBlogPosts(): Promise<BlogPostType[]> {
+  return prisma.blogPost.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+    take: 3,
+  })
+}
+
+async function getHeroSettings() {
+  try {
+    const rows = await prisma.storeSetting.findMany({
+      where: { key: { in: ['hero_heading_1', 'hero_heading_2', 'hero_heading_3', 'hero_subtitle', 'hero_badge', 'hero_bg_color'] } },
+    })
+    const m: Record<string, string> = {}
+    for (const r of rows) m[r.key] = r.value
+    return m
+  } catch {
+    return {} as Record<string, string>
+  }
+}
+
 const marqueeItems = [
   'BOLD. BRIGHT. TREND.',
   '✦ WEAR YOUR VIBE',
@@ -29,7 +50,18 @@ const marqueeItems = [
 ]
 
 export default async function HomePage() {
-  const featuredProducts = await getFeaturedProducts()
+  const [featuredProducts, recentPosts, hero] = await Promise.all([
+    getFeaturedProducts(),
+    getRecentBlogPosts(),
+    getHeroSettings(),
+  ])
+
+  const heroBg = hero.hero_bg_color || '#0A0A0A'
+  const heroH1 = hero.hero_heading_1 || 'wear your'
+  const heroH2 = hero.hero_heading_2 || 'boldest'
+  const heroH3 = hero.hero_heading_3 || 'colours.'
+  const heroSubtitle = hero.hero_subtitle || "High-saturation hoodies, tees & sweatshirts that make your complexion glow. Life's too short for boring clothes."
+  const heroBadge = hero.hero_badge || 'New Collection is Here'
 
   return (
     <div className="pt-[104px]">
@@ -43,7 +75,7 @@ export default async function HomePage() {
       </div>
 
       {/* Hero */}
-      <section className="relative min-h-[90vh] bg-brand-black flex items-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden" style={{ backgroundColor: heroBg }}>
         {/* Background gradient blobs */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-pink opacity-20 rounded-full blur-3xl" />
@@ -56,15 +88,15 @@ export default async function HomePage() {
             {/* Text */}
             <div className="animate-fade-in">
               <div className="inline-flex items-center gap-2 bg-brand-pink/20 text-brand-pink border border-brand-pink/30 rounded-full px-4 py-2 text-sm font-bold mb-6">
-                <Sparkles size={14} /> New Collection is Here
+                <Sparkles size={14} /> {heroBadge}
               </div>
               <h1 className="font-script text-6xl sm:text-7xl lg:text-8xl text-white leading-tight mb-6">
-                wear your
-                <span className="block text-brand-pink">boldest</span>
-                <span className="text-brand-yellow">colours.</span>
+                {heroH1}
+                <span className="block text-brand-pink">{heroH2}</span>
+                <span className="text-brand-yellow">{heroH3}</span>
               </h1>
               <p className="text-gray-300 text-lg mb-8 max-w-md leading-relaxed">
-                High-saturation hoodies, tees & sweatshirts that make your complexion glow. Life&apos;s too short for boring clothes.
+                {heroSubtitle}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/shop" className="btn-primary text-base px-8 py-4">
@@ -76,7 +108,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Hero product showcase */}
+            {/* Hero product showcase — top 3 featured products */}
             <div className="relative hidden lg:block">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4 mt-8">
@@ -89,11 +121,11 @@ export default async function HomePage() {
                       )}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-4">
                         <p className="text-white text-sm font-bold">{featuredProducts[0].name}</p>
-                        {featuredProducts[0].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[0].variants[0].color ?? ''}</p>}
+                        {featuredProducts[0].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[0].variants[0].color}</p>}
                       </div>
                     </Link>
                   ) : (
-                    <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-gradient-to-br from-brand-blue to-brand-purple" />
+                    <div className="rounded-2xl aspect-[3/4] bg-gradient-to-br from-brand-blue to-brand-purple" />
                   )}
                 </div>
                 <div className="space-y-4">
@@ -106,11 +138,11 @@ export default async function HomePage() {
                       )}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-3">
                         <p className="text-white text-xs font-bold">{featuredProducts[1].name}</p>
-                        {featuredProducts[1].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[1].variants[0].color ?? ''}</p>}
+                        {featuredProducts[1].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[1].variants[0].color}</p>}
                       </div>
                     </Link>
                   ) : (
-                    <div className="rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-brand-pink to-red-400" />
+                    <div className="rounded-2xl aspect-square bg-gradient-to-br from-brand-pink to-red-400" />
                   )}
                   {featuredProducts[2] ? (
                     <Link href={`/shop/${featuredProducts[2].slug}`} className="block rounded-2xl overflow-hidden aspect-square relative group">
@@ -121,15 +153,14 @@ export default async function HomePage() {
                       )}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-3">
                         <p className="text-white text-xs font-bold">{featuredProducts[2].name}</p>
-                        {featuredProducts[2].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[2].variants[0].color ?? ''}</p>}
+                        {featuredProducts[2].variants[0] && <p className="text-brand-yellow text-xs">{featuredProducts[2].variants[0].color}</p>}
                       </div>
                     </Link>
                   ) : (
-                    <div className="rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-gray-800 to-gray-900" />
+                    <div className="rounded-2xl aspect-square bg-gradient-to-br from-gray-800 to-gray-900" />
                   )}
                 </div>
               </div>
-              {/* Floating badge */}
               <div className="absolute -top-4 -right-4 bg-brand-yellow text-brand-black font-script text-lg px-5 py-3 rounded-2xl rotate-6 shadow-xl">
                 Bold – Bright – Trend
               </div>
@@ -266,30 +297,46 @@ export default async function HomePage() {
       </section>
 
       {/* Recent Blog */}
-      <section className="py-16 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 bg-brand-black rounded-3xl mb-8 mx-4 sm:mx-6 lg:mx-8">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="font-script text-4xl text-white">from the blog.</h2>
-          <Link href="/blog" className="text-brand-pink text-sm font-semibold hover:text-pink-400 flex items-center gap-1">
-            All Posts <ArrowRight size={14} />
-          </Link>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { title: '5 Bold Colour Combos You Need This Season', tag: 'Style Tips', date: 'Apr 2025' },
-            { title: 'How to Know Your Skin Undertone in 3 Steps', tag: 'Colour Guide', date: 'Mar 2025' },
-            { title: "Why We're Obsessed with High-Saturation Prints", tag: 'Brand Story', date: 'Feb 2025' },
-          ].map((post) => (
-            <Link href="/blog" key={post.title} className="group block">
-              <div className="aspect-video rounded-2xl bg-gradient-to-br from-brand-pink/20 to-brand-purple/20 border border-white/10 mb-4 flex items-center justify-center group-hover:scale-[1.02] transition-transform">
-                <FileText size={40} className="text-white/40" />
-              </div>
-              <span className="text-brand-pink text-xs font-bold uppercase tracking-wider">{post.tag}</span>
-              <h3 className="text-white font-bold text-sm mt-1 mb-2 group-hover:text-brand-pink transition-colors line-clamp-2">
-                {post.title}
-              </h3>
-              <p className="text-gray-500 text-xs">{post.date}</p>
+      <section className="mx-4 sm:mx-6 lg:mx-8 mb-8 bg-brand-black rounded-3xl overflow-hidden">
+        <div className="max-w-7xl mx-auto px-8 py-16">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-script text-4xl text-white">from the blog.</h2>
+            <Link href="/blog" className="text-brand-pink text-sm font-semibold hover:text-pink-400 flex items-center gap-1">
+              All Posts <ArrowRight size={14} />
             </Link>
-          ))}
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {recentPosts.length > 0 ? recentPosts.map((post) => (
+              <Link href={`/blog/${post.slug}`} key={post.id} className="group block">
+                <div className="aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-brand-pink/20 to-brand-purple/20 border border-white/10 mb-4 relative">
+                  {post.coverImage ? (
+                    <Image src={post.coverImage} alt={post.title} fill className="object-cover group-hover:scale-[1.03] transition-transform duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-20">
+                      <svg viewBox="0 0 24 24" className="w-12 h-12 text-white" fill="none" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                    </div>
+                  )}
+                </div>
+                {post.tags && <span className="text-brand-pink text-xs font-bold uppercase tracking-wider">{post.tags.split(',')[0].trim()}</span>}
+                <h3 className="text-white font-bold text-sm mt-1 mb-2 group-hover:text-brand-pink transition-colors line-clamp-2">{post.title}</h3>
+                <p className="text-gray-500 text-xs">{new Date(post.createdAt).toLocaleDateString('en-CA', { month: 'short', year: 'numeric' })}</p>
+              </Link>
+            )) : (
+              // Placeholder posts shown when no blog posts exist yet
+              [
+                { title: '5 Bold Colour Combos You Need This Season', tag: 'Style Tips', date: 'Apr 2025' },
+                { title: 'How to Know Your Skin Undertone in 3 Steps', tag: 'Colour Guide', date: 'Mar 2025' },
+                { title: "Why We're Obsessed with High-Saturation Prints", tag: 'Brand Story', date: 'Feb 2025' },
+              ].map((post) => (
+                <Link href="/blog" key={post.title} className="group block">
+                  <div className="aspect-video rounded-2xl bg-gradient-to-br from-brand-pink/20 to-brand-purple/20 border border-white/10 mb-4" />
+                  <span className="text-brand-pink text-xs font-bold uppercase tracking-wider">{post.tag}</span>
+                  <h3 className="text-white font-bold text-sm mt-1 mb-2 group-hover:text-brand-pink transition-colors line-clamp-2">{post.title}</h3>
+                  <p className="text-gray-500 text-xs">{post.date}</p>
+                </Link>
+              ))
+            )}
+          </div>
         </div>
       </section>
     </div>
