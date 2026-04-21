@@ -21,8 +21,8 @@ export function ProductCard({ product }: Props) {
   const price = getEffectivePrice(product.basePrice, product.salePrice)
   const primaryImage = product.images.find((i) => i.primary) || product.images[0]
 
-  // Get unique colours
-  const colours = Array.from(
+  // Get unique colors
+  const colors = Array.from(
     new Map(product.variants.map((v) => [v.color, v.colorHex])).entries()
   ).slice(0, 5)
 
@@ -122,10 +122,10 @@ export function ProductCard({ product }: Props) {
           </h3>
         </Link>
 
-        {/* Colour swatches */}
-        {colours.length > 0 && (
+        {/* Color swatches */}
+        {colors.length > 0 && (
           <div className="flex gap-1.5 mt-2">
-            {colours.map(([color, hex]) => (
+            {colors.map(([color, hex]) => (
               <div
                 key={color}
                 title={color}

@@ -67,9 +67,10 @@ export async function POST(req: Request) {
         featured: featured ?? false,
         published: published ?? true,
         images: {
-          create: (images || []).map((img: { url: string; alt?: string; primary?: boolean; sortOrder?: number }, i: number) => ({
+          create: (images || []).map((img: { url: string; alt?: string; color?: string; primary?: boolean; sortOrder?: number }, i: number) => ({
             url: img.url,
             alt: img.alt || name,
+            color: img.color || null,
             primary: i === 0,
             sortOrder: i,
           })),

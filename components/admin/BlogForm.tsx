@@ -118,7 +118,7 @@ export function BlogForm({ initialData, mode }: Props) {
         </div>
         <div>
           <label className="label">Tags</label>
-          <input className="input" placeholder="Style Tips, Colour Guide, Brand Story (comma-separated)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} />
+          <input className="input" placeholder="Style Tips, Color Guide, Brand Story (comma-separated)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} />
         </div>
       </div>
 

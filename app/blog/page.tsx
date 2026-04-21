@@ -8,8 +8,8 @@ import { PenLine, FileText } from 'lucide-react'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Blog — Style, Colour & All Things Bold',
-  description: 'Style tips, colour guides and brand stories from BoldType.',
+  title: 'Blog — Style, Color & All Things Bold',
+  description: 'Style tips, color guides and brand stories from BoldType.',
 }
 
 export default async function BlogPage() {
@@ -22,7 +22,7 @@ export default async function BlogPage() {
     <div className="pt-[104px] min-h-screen">
       <div className="bg-brand-black py-12 px-4 text-center">
         <h1 className="font-script text-5xl text-white mb-2">the boldtype blog.</h1>
-        <p className="text-gray-400 text-sm">Style drops, colour wisdom & good vibes only.</p>
+        <p className="text-gray-400 text-sm">Style drops, color wisdom & good vibes only.</p>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

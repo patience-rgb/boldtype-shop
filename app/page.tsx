@@ -43,10 +43,10 @@ async function getHeroSettings() {
 const marqueeItems = [
   'BOLD. BRIGHT. TREND.',
   '✦ WEAR YOUR VIBE',
-  '✦ FIND YOUR POWER COLOUR',
+  '✦ FIND YOUR POWER COLOR',
   '✦ BOLD. BRIGHT. TREND.',
   '✦ WEAR YOUR VIBE',
-  '✦ FIND YOUR POWER COLOUR',
+  '✦ FIND YOUR POWER COLOR',
 ]
 
 export default async function HomePage() {
@@ -59,7 +59,7 @@ export default async function HomePage() {
   const heroBg = hero.hero_bg_color || '#0A0A0A'
   const heroH1 = hero.hero_heading_1 || 'wear your'
   const heroH2 = hero.hero_heading_2 || 'boldest'
-  const heroH3 = hero.hero_heading_3 || 'colours.'
+  const heroH3 = hero.hero_heading_3 || 'colors.'
   const heroSubtitle = hero.hero_subtitle || "High-saturation hoodies, tees & sweatshirts that make your complexion glow. Life's too short for boring clothes."
   const heroBadge = hero.hero_badge || 'New Collection is Here'
 
@@ -103,7 +103,7 @@ export default async function HomePage() {
                   Shop the Drop <ArrowRight size={18} />
                 </Link>
                 <Link href="/color-finder" className="btn-yellow text-base px-8 py-4">
-                  <Sparkles size={18} /> Find My Colour
+                  <Sparkles size={18} /> Find My Color
                 </Link>
               </div>
             </div>
@@ -241,14 +241,14 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Colour Finder CTA */}
+      {/* Color Finder CTA */}
       <section className="mx-4 sm:mx-6 lg:mx-8 my-8 rounded-3xl bg-gradient-to-r from-brand-purple via-brand-blue to-brand-pink overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 py-16 grid md:grid-cols-2 gap-8 items-center">
           <div>
             <div className="inline-flex items-center gap-2 bg-white/20 text-white rounded-full px-4 py-2 text-sm font-bold mb-5">
               <Sparkles size={14} /> New Feature
             </div>
-            <h2 className="font-script text-5xl text-white mb-4">find your power colour.</h2>
+            <h2 className="font-script text-5xl text-white mb-4">find your power color.</h2>
             <p className="text-white/90 text-base leading-relaxed mb-6">
               Your skin&apos;s undertone is the key to making our high-saturation pieces truly <em>pop</em>. Take our 3-step quiz and unlock 2–3 shades that were literally made for you.
             </p>
@@ -283,8 +283,8 @@ export default async function HomePage() {
       <section className="py-16 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="grid sm:grid-cols-3 gap-8 text-center">
           {[
-            { icon: <Zap size={28} className="text-brand-yellow" />, title: 'Bold by Design', desc: 'Every piece is crafted to stand out. Loud colours, bolder prints.' },
-            { icon: <Palette size={28} className="text-brand-purple" />, title: 'Made for Every Skin Tone', desc: 'Our colour curation celebrates all complexions. Find your glow.' },
+            { icon: <Zap size={28} className="text-brand-yellow" />, title: 'Bold by Design', desc: 'Every piece is crafted to stand out. Loud colors, bolder prints.' },
+            { icon: <Palette size={28} className="text-brand-purple" />, title: 'Made for Every Skin Tone', desc: 'Our color curation celebrates all complexions. Find your glow.' },
             { icon: <Mail size={28} className="text-brand-pink" />, title: 'Ships Across Canada', desc: 'Free shipping on orders $75+. Packaged with love, obviously.' },
           ].map((item) => (
             <div key={item.title} className="p-8 rounded-3xl bg-gray-50 hover:bg-brand-pink/5 transition-colors group">
@@ -324,8 +324,8 @@ export default async function HomePage() {
             )) : (
               // Placeholder posts shown when no blog posts exist yet
               [
-                { title: '5 Bold Colour Combos You Need This Season', tag: 'Style Tips', date: 'Apr 2025' },
-                { title: 'How to Know Your Skin Undertone in 3 Steps', tag: 'Colour Guide', date: 'Mar 2025' },
+                { title: '5 Bold Color Combos You Need This Season', tag: 'Style Tips', date: 'Apr 2025' },
+                { title: 'How to Know Your Skin Undertone in 3 Steps', tag: 'Color Guide', date: 'Mar 2025' },
                 { title: "Why We're Obsessed with High-Saturation Prints", tag: 'Brand Story', date: 'Feb 2025' },
               ].map((post) => (
                 <Link href="/blog" key={post.title} className="group block">

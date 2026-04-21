@@ -18,7 +18,7 @@ export function ProductDetailClient({ product }: Props) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
 
-  // When a colour is picked, jump to the first image tagged for that colour (if any)
+  // When a color is picked, jump to the first image tagged for that color (if any)
   const handleColorSelect = (color: string) => {
     setSelectedColor(color)
     setSelectedSize(null)
@@ -33,12 +33,12 @@ export function ProductDetailClient({ product }: Props) {
   const price = getEffectivePrice(product.basePrice, product.salePrice)
   const onSale = isOnSale(product.basePrice, product.salePrice)
 
-  // Unique colours
-  const colours = Array.from(
+  // Unique colors
+  const colors = Array.from(
     new Map(product.variants.map((v) => [v.color, v.colorHex])).entries()
   )
 
-  // Available sizes for selected colour
+  // Available sizes for selected color
   const availableSizes = selectedColor
     ? product.variants
         .filter((v) => v.color === selectedColor)
@@ -50,7 +50,7 @@ export function ProductDetailClient({ product }: Props) {
   )
 
   const handleAddToCart = async () => {
-    if (!selectedColor) return toast.error('Pick a colour first!')
+    if (!selectedColor) return toast.error('Pick a color first!')
     if (!selectedSize) return toast.error('Pick a size!')
     if (!selectedVariant) return toast.error('Variant not found')
     if (selectedVariant.stock === 0) return toast.error('This one\'s sold out!')
@@ -164,14 +164,14 @@ export function ProductDetailClient({ product }: Props) {
 
           <p className="text-gray-500 mt-4 leading-relaxed text-sm">{product.description}</p>
 
-          {/* Colour selector */}
+          {/* Color selector */}
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
-              <span className="font-bold text-sm">Colour</span>
+              <span className="font-bold text-sm">Color</span>
               {selectedColor && <span className="text-sm text-gray-500">{selectedColor}</span>}
             </div>
             <div className="flex flex-wrap gap-3">
-              {colours.map(([color, hex]) => (
+              {colors.map(([color, hex]) => (
                 <button
                   key={color}
                   title={color}
@@ -242,7 +242,7 @@ export function ProductDetailClient({ product }: Props) {
               {adding ? 'Added!' : 'Add to Cart'}
             </button>
             {!selectedColor && (
-              <p className="text-xs text-center text-gray-400">Select a colour to continue</p>
+              <p className="text-xs text-center text-gray-400">Select a color to continue</p>
             )}
           </div>
 

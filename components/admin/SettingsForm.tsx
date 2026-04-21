@@ -335,12 +335,12 @@ export function SettingsForm({ initialSettings }: Props) {
 
           <div className={annVisible ? '' : 'opacity-40 pointer-events-none'}>
             <label className="label">Message Text</label>
-            <input className="input" value={annText} onChange={(e) => setAnnText(e.target.value)} placeholder="Free shipping on orders over $75 CAD | Find your power colour →" />
-            <p className="text-xs text-gray-400 mt-1">Use → at the end to auto-link to the colour quiz</p>
+            <input className="input" value={annText} onChange={(e) => setAnnText(e.target.value)} placeholder="Free shipping on orders over $75 CAD | Find your power color →" />
+            <p className="text-xs text-gray-400 mt-1">Use → at the end to auto-link to the color quiz</p>
           </div>
 
           <div className={annVisible ? '' : 'opacity-40 pointer-events-none'}>
-            <label className="label">Background Colour</label>
+            <label className="label">Background Color</label>
             <div className="flex items-center gap-3">
               <input type="color" className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-1" value={annBg} onChange={(e) => setAnnBg(e.target.value)} />
               <input className="input flex-1" value={annBg} onChange={(e) => setAnnBg(e.target.value)} placeholder="#FF3E8E" />
@@ -351,7 +351,7 @@ export function SettingsForm({ initialSettings }: Props) {
           {annVisible && (
             <div className="rounded-xl overflow-hidden">
               <div className="text-white text-center text-xs font-semibold py-2 px-4" style={{ backgroundColor: annBg || '#FF3E8E' }}>
-                {annText || 'Free shipping on orders over $75 CAD | Find your power colour →'} <span className="underline">Take the quiz</span>
+                {annText || 'Free shipping on orders over $75 CAD | Find your power color →'} <span className="underline">Take the quiz</span>
               </div>
             </div>
           )}
@@ -385,7 +385,7 @@ export function SettingsForm({ initialSettings }: Props) {
             </div>
             <div>
               <label className="label">Heading Line 3 (yellow)</label>
-              <input className="input" value={heroH3} onChange={(e) => setHeroH3(e.target.value)} placeholder="colours." />
+              <input className="input" value={heroH3} onChange={(e) => setHeroH3(e.target.value)} placeholder="colors." />
             </div>
           </div>
           <div>
@@ -397,12 +397,12 @@ export function SettingsForm({ initialSettings }: Props) {
             <input className="input" value={heroBadge} onChange={(e) => setHeroBadge(e.target.value)} placeholder="New Collection is Here" />
           </div>
           <div>
-            <label className="label">Background Colour</label>
+            <label className="label">Background Color</label>
             <div className="flex items-center gap-3">
               <input type="color" className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-1" value={heroBg} onChange={(e) => setHeroBg(e.target.value)} />
               <input className="input flex-1" value={heroBg} onChange={(e) => setHeroBg(e.target.value)} placeholder="#0A0A0A" />
             </div>
-            <p className="text-xs text-gray-400 mt-1">Dark colours work best — text is always white</p>
+            <p className="text-xs text-gray-400 mt-1">Dark colors work best — text is always white</p>
           </div>
           <p className="text-xs text-gray-400 bg-gray-50 rounded-xl p-3">
             <strong>Product cards:</strong> The 3 product cards in the hero automatically show your top featured products. Mark products as "featured" in the product editor to control which ones appear.

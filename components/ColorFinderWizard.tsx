@@ -139,7 +139,7 @@ export function ColorFinderWizard() {
           <p className="text-gray-500 text-base max-w-md mx-auto">{rec.description}</p>
         </div>
 
-        {/* Colour cards */}
+        {/* Color cards */}
         <div className="space-y-4 mb-10">
           <h3 className="font-bold text-lg">
             Your Bold & Bright Power Palette
@@ -176,7 +176,7 @@ export function ColorFinderWizard() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/shop" className="btn-primary">
-              Shop All Colours <ArrowRight size={16} />
+              Shop All Colors <ArrowRight size={16} />
             </Link>
             <Link
               href={`/shop?color=${result.toLowerCase()}`}
