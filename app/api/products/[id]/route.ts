@@ -43,9 +43,52 @@ export async function PUT(
       variants,
     } = body
 
-    // Delete old images & variants, recreate
+    // Rebuild images
     await prisma.productImage.deleteMany({ where: { productId: params.id } })
-    await prisma.productVariant.deleteMany({ where: { productId: params.id } })
+
+    // Upsert variants — avoid deleting rows referenced by OrderItems (no cascade on that relation)
+    const incomingVariants = (variants || []) as { color: string; colorHex: string; size: string; stock: number; sku?: string }[]
+    const existingVariants = await prisma.productVariant.findMany({
+      where: { productId: params.id },
+      include: { orderItems: { take: 1 } },
+    })
+    const incomingKeys = new Set(incomingVariants.map((v) => `${v.color}|${v.size}`))
+
+    // Delete only variants not in the new list that have no order history
+    const toDelete = existingVariants
+      .filter((v) => !incomingKeys.has(`${v.color}|${v.size}`) && v.orderItems.length === 0)
+      .map((v) => v.id)
+    if (toDelete.length > 0) {
+      await prisma.productVariant.deleteMany({ where: { id: { in: toDelete } } })
+    }
+
+    // Zero out removed variants that have order history (keep rows for order record integrity)
+    const toZero = existingVariants
+      .filter((v) => !incomingKeys.has(`${v.color}|${v.size}`) && v.orderItems.length > 0)
+      .map((v) => v.id)
+    if (toZero.length > 0) {
+      await prisma.productVariant.updateMany({ where: { id: { in: toZero } }, data: { stock: 0 } })
+    }
+
+    // Upsert each incoming variant
+    for (const v of incomingVariants) {
+      await prisma.productVariant.upsert({
+        where: { productId_color_size: { productId: params.id, color: v.color, size: v.size } },
+        create: {
+          productId: params.id,
+          color: v.color,
+          colorHex: v.colorHex || '#000000',
+          size: v.size,
+          stock: parseInt(v.stock as unknown as string) || 0,
+          sku: v.sku || null,
+        },
+        update: {
+          colorHex: v.colorHex || '#000000',
+          stock: parseInt(v.stock as unknown as string) || 0,
+          sku: v.sku || null,
+        },
+      })
+    }
 
     const product = await prisma.product.update({
       where: { id: params.id },
@@ -65,15 +108,6 @@ export async function PUT(
             color: img.color || null,
             primary: i === 0,
             sortOrder: i,
-          })),
-        },
-        variants: {
-          create: (variants || []).map((v: { color: string; colorHex: string; size: string; stock: number; sku?: string }) => ({
-            color: v.color,
-            colorHex: v.colorHex || '#000000',
-            size: v.size,
-            stock: parseInt(v.stock as unknown as string) || 0,
-            sku: v.sku,
           })),
         },
       },

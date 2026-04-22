@@ -10,5 +10,5 @@ export function generateStaticParams() {
 export default function CategoryPage({ params }: Props) {
   const cat = CATEGORIES.find((c) => c.slug === params.category)
   if (!cat) redirect('/shop')
-  redirect(`/shop?category=${params.category}`)
+  redirect(`/shop?category=${cat.value.toLowerCase()}`)
 }

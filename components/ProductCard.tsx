@@ -140,10 +140,15 @@ export function ProductCard({ product }: Props) {
         )}
 
         {/* Price */}
-        <div className="flex items-center gap-2 mt-2">
-          <span className="font-bold text-sm">{formatPrice(price)}</span>
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          <span className={cn('font-bold text-sm', onSale && 'text-brand-pink')}>{formatPrice(price)}</span>
           {onSale && (
-            <span className="text-xs text-gray-400 line-through">{formatPrice(product.basePrice)}</span>
+            <>
+              <span className="text-xs text-gray-400 line-through">{formatPrice(product.basePrice)}</span>
+              <span className="text-[10px] font-bold bg-brand-pink/10 text-brand-pink px-1.5 py-0.5 rounded-full">
+                -{Math.round((1 - price / product.basePrice) * 100)}%
+              </span>
+            </>
           )}
         </div>
       </div>
