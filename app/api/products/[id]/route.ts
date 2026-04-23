@@ -43,87 +43,105 @@ export async function PUT(
       variants,
     } = body
 
-    const incomingVariants = (variants || []) as { color: string; colorHex: string; size: string; stock: number; sku?: string }[]
+    const incomingVariants = (variants || []) as {
+      color: string
+      colorHex: string
+      size: string
+      stock: number
+      sku?: string
+    }[]
 
-    const product = await prisma.$transaction(async (tx) => {
-      // Bypass RLS for admin operations — postgres role must have BYPASSRLS or be table owner
-      await tx.$executeRaw`SET LOCAL row_security = off`
+    // ── Images: delete all then recreate ──────────────────────────────────
+    await prisma.productImage.deleteMany({ where: { productId: params.id } })
 
-      // Rebuild images
-      await tx.productImage.deleteMany({ where: { productId: params.id } })
+    // ── Variants: smart sync without $transaction (PgBouncer-safe) ────────
+    // Fetch existing variants and check order history so we never delete
+    // rows that OrderItems still reference (no cascade on that FK).
+    const existingVariants = await prisma.productVariant.findMany({
+      where: { productId: params.id },
+      include: { orderItems: { take: 1 } },
+    })
 
-      // Upsert variants — avoid deleting rows referenced by OrderItems (no cascade on that relation)
-      const existingVariants = await tx.productVariant.findMany({
-        where: { productId: params.id },
-        include: { orderItems: { take: 1 } },
+    const incomingKeys = new Set(incomingVariants.map((v) => `${v.color}|${v.size}`))
+    const existingMap = new Map(existingVariants.map((v) => [`${v.color}|${v.size}`, v]))
+
+    // Delete variants removed from the list that have no order history
+    const toDeleteIds = existingVariants
+      .filter((v) => !incomingKeys.has(`${v.color}|${v.size}`) && v.orderItems.length === 0)
+      .map((v) => v.id)
+    if (toDeleteIds.length > 0) {
+      await prisma.productVariant.deleteMany({ where: { id: { in: toDeleteIds } } })
+    }
+
+    // Zero out removed variants that have order history (preserve for records)
+    const toZeroIds = existingVariants
+      .filter((v) => !incomingKeys.has(`${v.color}|${v.size}`) && v.orderItems.length > 0)
+      .map((v) => v.id)
+    if (toZeroIds.length > 0) {
+      await prisma.productVariant.updateMany({
+        where: { id: { in: toZeroIds } },
+        data: { stock: 0 },
       })
-      const incomingKeys = new Set(incomingVariants.map((v) => `${v.color}|${v.size}`))
+    }
 
-      // Delete only variants not in the new list that have no order history
-      const toDelete = existingVariants
-        .filter((v) => !incomingKeys.has(`${v.color}|${v.size}`) && v.orderItems.length === 0)
-        .map((v) => v.id)
-      if (toDelete.length > 0) {
-        await tx.productVariant.deleteMany({ where: { id: { in: toDelete } } })
-      }
+    // Update existing variants by their row ID (avoids compound-key upsert)
+    // and create brand-new ones with a plain create
+    for (const v of incomingVariants) {
+      const key = `${v.color}|${v.size}`
+      const stock = parseInt(String(v.stock)) || 0
+      const colorHex = v.colorHex || '#000000'
+      const existing = existingMap.get(key)
 
-      // Zero out removed variants that have order history (keep rows for order record integrity)
-      const toZero = existingVariants
-        .filter((v) => !incomingKeys.has(`${v.color}|${v.size}`) && v.orderItems.length > 0)
-        .map((v) => v.id)
-      if (toZero.length > 0) {
-        await tx.productVariant.updateMany({ where: { id: { in: toZero } }, data: { stock: 0 } })
-      }
-
-      // Upsert each incoming variant
-      for (const v of incomingVariants) {
-        await tx.productVariant.upsert({
-          where: { productId_color_size: { productId: params.id, color: v.color, size: v.size } },
-          create: {
+      if (existing) {
+        await prisma.productVariant.update({
+          where: { id: existing.id },
+          data: { colorHex, stock, sku: v.sku || null },
+        })
+      } else {
+        await prisma.productVariant.create({
+          data: {
             productId: params.id,
             color: v.color,
-            colorHex: v.colorHex || '#000000',
+            colorHex,
             size: v.size,
-            stock: parseInt(v.stock as unknown as string) || 0,
-            sku: v.sku || null,
-          },
-          update: {
-            colorHex: v.colorHex || '#000000',
-            stock: parseInt(v.stock as unknown as string) || 0,
+            stock,
             sku: v.sku || null,
           },
         })
       }
+    }
 
-      return tx.product.update({
-        where: { id: params.id },
-        data: {
-          name,
-          description,
-          details,
-          category,
-          basePrice: parseFloat(basePrice),
-          salePrice: salePrice ? parseFloat(salePrice) : null,
-          featured: featured ?? false,
-          published: published ?? true,
-          images: {
-            create: (images || []).map((img: { url: string; alt?: string; color?: string; primary?: boolean }, i: number) => ({
+    // ── Update core product fields + rebuild images ────────────────────────
+    const product = await prisma.product.update({
+      where: { id: params.id },
+      data: {
+        name,
+        description,
+        details,
+        category,
+        basePrice: parseFloat(basePrice),
+        salePrice: salePrice ? parseFloat(salePrice) : null,
+        featured: featured ?? false,
+        published: published ?? true,
+        images: {
+          create: (images || []).map(
+            (img: { url: string; alt?: string; color?: string; primary?: boolean }, i: number) => ({
               url: img.url,
               alt: img.alt || name,
               color: img.color || null,
               primary: i === 0,
               sortOrder: i,
-            })),
-          },
+            })
+          ),
         },
-        include: { images: true, variants: true },
-      })
+      },
+      include: { images: true, variants: true },
     })
 
     return NextResponse.json(product)
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to update product'
-    console.error('[PUT /api/products]', message)
+    console.error('[PUT /api/products/:id]', message)
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

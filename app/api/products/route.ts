@@ -90,7 +90,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json(product, { status: 201 })
   } catch (err) {
-    console.error(err)
-    return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })
+    const message = err instanceof Error ? err.message : 'Failed to create product'
+    console.error('[POST /api/products]', message)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

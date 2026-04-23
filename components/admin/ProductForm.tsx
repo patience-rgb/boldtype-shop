@@ -137,6 +137,17 @@ export function ProductForm({ initialData, mode }: Props) {
     if (!form.name) return toast.error('Product name is required')
     if (!form.basePrice) return toast.error('Base price is required')
 
+    // If the user filled in the "Add Variant" form but forgot to click
+    // "Add This Variant", auto-add it so nothing is silently lost.
+    let finalForm = form
+    if (newVariant.color) {
+      const added = { ...newVariant }
+      finalForm = { ...form, variants: [...form.variants, added] }
+      setForm(finalForm)
+      setNewVariant({ color: '', colorHex: '#000000', size: 'M', stock: 0, sku: '' })
+      toast('Variant "' + added.color + ' / ' + added.size + '" was added automatically before saving.')
+    }
+
     setSaving(true)
     try {
       const url = mode === 'edit' ? `/api/products/${initialData?.id}` : '/api/products'
@@ -144,7 +155,7 @@ export function ProductForm({ initialData, mode }: Props) {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(finalForm),
       })
 
       if (!res.ok) {
